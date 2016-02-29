@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PC_BUILD_TASK">
+
+
+	<select id="selectLastList" parameterClass="java.util.Map" resultMap="queryResult">
+		select 
+			<include refid="PC_BUILD_TASK.sql_query_columns" />
+		from PC_BUILD_TASK
+		where  DATA_STATUS=1 and id in (
+			select max(id)
+		       from PC_BUILD_TASK
+		       where BUILD_DEF_ID in ($buildDefIds$)  and DATA_STATUS=1
+		       group by BUILD_DEF_ID
+		)
+		order by ID
+	</select>
+	
+
+
+</sqlMap>

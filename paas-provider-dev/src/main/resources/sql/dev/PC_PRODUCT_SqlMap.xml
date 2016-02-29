@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PC_PRODUCT">
+
+
+	<resultMap class="com.aic.paas.dev.provider.bean.PcProduct" id="queryResult">
+		<result column="ID" jdbcType="BIGINT" property="id"/>	<!-- ID -->
+		<result column="MNT_ID" jdbcType="BIGINT" property="mntId"/>	<!-- 所属租户 -->
+		<result column="COMP_ROOM_ID" jdbcType="BIGINT" property="compRoomId"/>	<!-- 所属机房 -->
+		<result column="CODE" jdbcType="VARCHAR" property="code"/>	<!-- 产品代码 -->
+		<result column="NAME" jdbcType="VARCHAR" property="name"/>	<!-- 产品名称 -->
+		<result column="REMARK" jdbcType="VARCHAR" property="remark"/>	<!-- 产品描述 -->
+		<result column="STATUS" jdbcType="INTEGER" property="status"/>	<!-- 产品状态 -->
+		<result column="RESP_DOC_TYPE" jdbcType="INTEGER" property="respDocType"/>	<!-- 文档库类型 -->
+		<result column="RESP_DOC_URL" jdbcType="VARCHAR" property="respDocUrl"/>	<!-- 文档库URL -->
+		<result column="RESP_DOC_STATUS" jdbcType="INTEGER" property="respDocStatus"/>	<!-- 文档库状态 -->
+		<result column="RESP_DOC_APPLY_ID" jdbcType="BIGINT" property="respDocApplyId"/>	<!-- 文档库申请ID -->
+		<result column="DATA_STATUS" jdbcType="INTEGER" property="dataStatus"/>	<!-- 数据状态 -->
+		<result column="CREATOR" jdbcType="VARCHAR" property="creator"/>	<!-- 创建人 -->
+		<result column="CREATE_TIME" jdbcType="BIGINT" property="createTime"/>	<!-- 创建时间 -->
+		<result column="MODIFIER" jdbcType="VARCHAR" property="modifier"/>	<!-- 修改人 -->
+		<result column="MODIFY_TIME" jdbcType="BIGINT" property="modifyTime"/>	<!-- 修改时间 -->
+	</resultMap>
+	
+
+	<sql id="sql_query_where">
+		<isNotEmpty prepend="and" property="cdt.id" >
+			ID = #cdt.id:BIGINT#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="ids" >
+			ID in ($ids$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startId" >
+			<![CDATA[ ID >= #cdt.startId:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endId" >
+			<![CDATA[ ID <= #cdt.endId:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.mntId" >
+			MNT_ID = #cdt.mntId:BIGINT#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="mntIds" >
+			MNT_ID in ($mntIds$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startMntId" >
+			<![CDATA[ MNT_ID >= #cdt.startMntId:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endMntId" >
+			<![CDATA[ MNT_ID <= #cdt.endMntId:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.compRoomId" >
+			COMP_ROOM_ID = #cdt.compRoomId:BIGINT#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="compRoomIds" >
+			COMP_ROOM_ID in ($compRoomIds$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startCompRoomId" >
+			<![CDATA[ COMP_ROOM_ID >= #cdt.startCompRoomId:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endCompRoomId" >
+			<![CDATA[ COMP_ROOM_ID <= #cdt.endCompRoomId:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.code" >
+			CODE like #cdt.code:VARCHAR# 
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.codeEqual" >
+			CODE = #cdt.codeEqual:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="codes" >
+			CODE in ($codes$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.name" >
+			NAME like #cdt.name:VARCHAR# 
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.nameEqual" >
+			NAME = #cdt.nameEqual:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="names" >
+			NAME in ($names$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.remark" >
+			REMARK like #cdt.remark:VARCHAR# 
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.status" >
+			STATUS = #cdt.status:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="statuss" >
+			STATUS in ($statuss$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startStatus" >
+			<![CDATA[ STATUS >= #cdt.startStatus:INTEGER# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endStatus" >
+			<![CDATA[ STATUS <= #cdt.endStatus:INTEGER# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.respDocType" >
+			RESP_DOC_TYPE = #cdt.respDocType:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="respDocTypes" >
+			RESP_DOC_TYPE in ($respDocTypes$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startRespDocType" >
+			<![CDATA[ RESP_DOC_TYPE >= #cdt.startRespDocType:INTEGER# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endRespDocType" >
+			<![CDATA[ RESP_DOC_TYPE <= #cdt.endRespDocType:INTEGER# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.respDocUrl" >
+			RESP_DOC_URL like #cdt.respDocUrl:VARCHAR# 
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.respDocStatus" >
+			RESP_DOC_STATUS = #cdt.respDocStatus:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="respDocStatuss" >
+			RESP_DOC_STATUS in ($respDocStatuss$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startRespDocStatus" >
+			<![CDATA[ RESP_DOC_STATUS >= #cdt.startRespDocStatus:INTEGER# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endRespDocStatus" >
+			<![CDATA[ RESP_DOC_STATUS <= #cdt.endRespDocStatus:INTEGER# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.respDocApplyId" >
+			RESP_DOC_APPLY_ID = #cdt.respDocApplyId:BIGINT#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="respDocApplyIds" >
+			RESP_DOC_APPLY_ID in ($respDocApplyIds$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startRespDocApplyId" >
+			<![CDATA[ RESP_DOC_APPLY_ID >= #cdt.startRespDocApplyId:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endRespDocApplyId" >
+			<![CDATA[ RESP_DOC_APPLY_ID <= #cdt.endRespDocApplyId:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.dataStatus" >
+			DATA_STATUS = #cdt.dataStatus:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="dataStatuss" >
+			DATA_STATUS in ($dataStatuss$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startDataStatus" >
+			<![CDATA[ DATA_STATUS >= #cdt.startDataStatus:INTEGER# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endDataStatus" >
+			<![CDATA[ DATA_STATUS <= #cdt.endDataStatus:INTEGER# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.creator" >
+			CREATOR like #cdt.creator:VARCHAR# 
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.createTime" >
+			CREATE_TIME = #cdt.createTime:BIGINT#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="createTimes" >
+			CREATE_TIME in ($createTimes$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startCreateTime" >
+			<![CDATA[ CREATE_TIME >= #cdt.startCreateTime:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endCreateTime" >
+			<![CDATA[ CREATE_TIME <= #cdt.endCreateTime:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.modifier" >
+			MODIFIER like #cdt.modifier:VARCHAR# 
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.modifyTime" >
+			MODIFY_TIME = #cdt.modifyTime:BIGINT#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="modifyTimes" >
+			MODIFY_TIME in ($modifyTimes$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startModifyTime" >
+			<![CDATA[ MODIFY_TIME >= #cdt.startModifyTime:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endModifyTime" >
+			<![CDATA[ MODIFY_TIME <= #cdt.endModifyTime:BIGINT# ]]>
+		</isNotEmpty>
+	</sql>
+	
+
+	<sql id="sql_update_columns">
+		<isNotNull prepend="," property="record.id"> 
+			ID = #record.id:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="record.mntId"> 
+			MNT_ID = #record.mntId:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="record.compRoomId"> 
+			COMP_ROOM_ID = #record.compRoomId:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="record.code"> 
+			CODE = #record.code:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="record.name"> 
+			NAME = #record.name:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="record.remark"> 
+			REMARK = #record.remark:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="record.status"> 
+			STATUS = #record.status:INTEGER#
+		</isNotNull>
+		<isNotNull prepend="," property="record.respDocType"> 
+			RESP_DOC_TYPE = #record.respDocType:INTEGER#
+		</isNotNull>
+		<isNotNull prepend="," property="record.respDocUrl"> 
+			RESP_DOC_URL = #record.respDocUrl:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="record.respDocStatus"> 
+			RESP_DOC_STATUS = #record.respDocStatus:INTEGER#
+		</isNotNull>
+		<isNotNull prepend="," property="record.respDocApplyId"> 
+			RESP_DOC_APPLY_ID = #record.respDocApplyId:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="record.dataStatus"> 
+			DATA_STATUS = #record.dataStatus:INTEGER#
+		</isNotNull>
+		<isNotNull prepend="," property="record.creator"> 
+			CREATOR = #record.creator:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="record.createTime"> 
+			CREATE_TIME = #record.createTime:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="record.modifier"> 
+			MODIFIER = #record.modifier:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="record.modifyTime"> 
+			MODIFY_TIME = #record.modifyTime:BIGINT#
+		</isNotNull>
+	</sql>
+	
+
+	<sql id="sql_query_columns">
+		ID, MNT_ID, COMP_ROOM_ID, CODE, NAME, REMARK, 
+		STATUS, RESP_DOC_TYPE, RESP_DOC_URL, RESP_DOC_STATUS, RESP_DOC_APPLY_ID, DATA_STATUS, 
+		CREATOR, CREATE_TIME, MODIFIER, MODIFY_TIME
+	</sql>
+	
+
+	
+
+	<select id="selectList" parameterClass="java.util.Map" resultMap="queryResult">
+		select 
+			<include refid="PC_PRODUCT.sql_query_columns" />
+		from PC_PRODUCT 
+			<dynamic prepend="where" >
+				<include refid="PC_PRODUCT.sql_query_where"/>
+			</dynamic>
+		order by 
+			<isNotEmpty property="orders" >
+				$orders$
+			</isNotEmpty>
+			<isEmpty property="orders" >
+				ID
+			</isEmpty>
+	</select>
+	<select id="selectCount" parameterClass="java.util.Map" resultClass="java.lang.Long">
+		select count(1) from PC_PRODUCT 
+			<dynamic prepend="where" >
+				<include refid="PC_PRODUCT.sql_query_where"/>
+			</dynamic>
+	</select>
+	<select id="selectById" parameterClass="java.util.Map" resultMap="queryResult">
+		select 
+			<include refid="PC_PRODUCT.sql_query_columns" />
+		from PC_PRODUCT where ID=#id:BIGINT# and DATA_STATUS=1  
+	</select>
+	
+
+	
+
+	<insert id="insert" parameterClass="java.util.Map">
+		insert into PC_PRODUCT(
+			ID, MNT_ID, COMP_ROOM_ID, CODE, NAME, 
+			REMARK, STATUS, RESP_DOC_TYPE, RESP_DOC_URL, RESP_DOC_STATUS, 
+			RESP_DOC_APPLY_ID, DATA_STATUS, CREATOR, CREATE_TIME, MODIFIER, 
+			MODIFY_TIME)
+		values (
+			#record.id:BIGINT#, #record.mntId:BIGINT#, #record.compRoomId:BIGINT#, #record.code:VARCHAR#, #record.name:VARCHAR#, 
+			#record.remark:VARCHAR#, #record.status:INTEGER#, #record.respDocType:INTEGER#, #record.respDocUrl:VARCHAR#, #record.respDocStatus:INTEGER#, 
+			#record.respDocApplyId:BIGINT#, #record.dataStatus:INTEGER#, #record.creator:VARCHAR#, #record.createTime:BIGINT#, #record.modifier:VARCHAR#, 
+			#record.modifyTime:BIGINT#)
+	</insert>
+	
+
+	
+
+	<update id="updateById" parameterClass="java.util.Map">
+		update PC_PRODUCT
+			<dynamic prepend="set" > 
+				<include refid="PC_PRODUCT.sql_update_columns"/> 
+			</dynamic>
+		where ID = #id:BIGINT#
+	</update>
+	<update id="updateByCdt" parameterClass="java.util.Map">
+		update PC_PRODUCT
+			<dynamic prepend="set" > 
+				<include refid="PC_PRODUCT.sql_update_columns"/> 
+			</dynamic>
+			<dynamic prepend="where" > 
+				<include refid="PC_PRODUCT.sql_query_where"/> 
+			</dynamic>
+	</update>
+	
+	
+
+	
+
+	<delete id="deleteById" parameterClass="java.util.Map">
+		delete from PC_PRODUCT where ID = #id:BIGINT#
+	</delete>
+	<delete id="deleteByCdt" parameterClass="java.util.Map">
+		delete from PC_PRODUCT
+			<dynamic prepend="where" > 
+				<include refid="PC_PRODUCT.sql_query_where"/> 
+			</dynamic>
+	</delete>
+	
+
+
+
+</sqlMap>

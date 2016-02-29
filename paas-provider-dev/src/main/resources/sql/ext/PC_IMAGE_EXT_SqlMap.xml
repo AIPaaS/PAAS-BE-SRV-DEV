@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PC_IMAGE">
+
+
+	<select id="selectLastList" parameterClass="java.util.Map" resultMap="queryResult">
+		select 
+			<include refid="PC_IMAGE.sql_query_columns" />
+		from PC_IMAGE
+		where  DATA_STATUS=1 and id in (
+			select max(id)
+		       from PC_IMAGE
+		       where DEF_ID in ($defIds$)  and DATA_STATUS=1
+		       group by DEF_ID
+		)
+		order by ID
+	</select>
+	
+	
+	<select id="selectListByFullName" parameterClass="java.util.Map" resultMap="queryResult">
+		select 
+			<include refid="PC_IMAGE.sql_query_columns" />
+		from PC_IMAGE 
+		where IMAGE_FULL_NAME = #fullName:VARCHAR#
+			<include refid="PC_IMAGE.sql_query_where"/>
+		order by 
+			<isNotEmpty property="orders" >
+				$orders$
+			</isNotEmpty>
+			<isEmpty property="orders" >
+				ID
+			</isEmpty>
+	</select>
+
+
+
+</sqlMap>

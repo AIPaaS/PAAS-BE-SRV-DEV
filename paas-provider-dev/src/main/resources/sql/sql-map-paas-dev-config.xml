@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+	<settings cacheModelsEnabled="true" lazyLoadingEnabled="false"
+		useStatementNamespaces="true" enhancementEnabled="true" />
+
+
+		
+	<!-- dev -->
+	<sqlMap resource="sql/dev/PC_BUILD_DEF_SqlMap.xml" />
+	<sqlMap resource="sql/dev/PC_BUILD_TASK_LOG_SqlMap.xml" />
+	<sqlMap resource="sql/dev/PC_BUILD_TASK_SqlMap.xml" />
+	<sqlMap resource="sql/dev/PC_IMAGE_DEF_SqlMap.xml" />
+	<sqlMap resource="sql/dev/PC_IMAGE_DEPLOY_SqlMap.xml" />
+	<sqlMap resource="sql/dev/PC_IMAGE_SqlMap.xml" />
+	<sqlMap resource="sql/dev/PC_PRODUCT_MGR_SqlMap.xml" />
+	<sqlMap resource="sql/dev/PC_PRODUCT_SqlMap.xml" />
+	<sqlMap resource="sql/dev/PC_PROJECT_MGR_SqlMap.xml" />
+	<sqlMap resource="sql/dev/PC_PROJECT_SqlMap.xml" />
+	<sqlMap resource="sql/dev/VC_MNT_REPOSITORY_APPLY_SqlMap.xml" />
+	
+	
+	
+	
+	<!-- ext -->
+	<sqlMap resource="sql/ext/PC_BUILD_TASK_EXT_SqlMap.xml" />
+	<sqlMap resource="sql/ext/PC_PRODUCT_EXT_SqlMap.xml" />
+	<sqlMap resource="sql/ext/PC_PROJECT_EXT_SqlMap.xml" />
+	<sqlMap resource="sql/ext/PC_IMAGE_DEF_SqlMap.xml" />
+	<sqlMap resource="sql/ext/PC_IMAGE_EXT_SqlMap.xml" />
+	
+	
+	
+	
+</sqlMapConfig>

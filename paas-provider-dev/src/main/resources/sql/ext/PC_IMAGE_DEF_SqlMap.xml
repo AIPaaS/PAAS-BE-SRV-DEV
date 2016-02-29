@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PC_IMAGE_DEF">
+
+
+	
+
+	<select id="selectDefByFullName" parameterClass="java.util.Map" resultMap="queryResult">
+		select 
+			<include refid="PC_IMAGE_DEF.sql_query_columns" />
+		from PC_IMAGE_DEF 
+			where DATA_STATUS=1
+				and MNT_ID = #mntId:BIGINT#
+				and IMAGE_FULL_NAME = #imageFullName:VARCHAR#
+	</select>
+	
+
+</sqlMap>

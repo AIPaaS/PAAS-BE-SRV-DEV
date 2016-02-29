@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+		  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+          http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+          http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+        
+        <import resource="classpath:spring/spring-paas-dev-db-definition.xml" />
+        
+        
+        <bean id="dataSource_paas_dev" class="com.binary.framework.spring.DataSourceAdapter">
+        	<constructor-arg value="${ds.jdbc.paas.dev.dsname}" />
+			<constructor-arg ref="com.binary.jdbc.JdbcOperatorFactory" />
+		</bean>
+		
+		
+		<bean id="sqlMapClientTemplate_paas_dev" class="com.binary.framework.ibatis.IBatisSqlMapClientTemplate" primary="true">
+			<property name="dataSource" ref="dataSource_paas_dev" />
+			<property name="sqlMapClient">
+				<bean class="com.binary.framework.ibatis.IBatisSqlMapClientFactory">
+					<property name="configLocations">
+						<list>
+							<description>排序：优先加载数据库表的sql定义（文件名带model字样），使得后续加载的自定义sql定义可以引用先加载的文件中的定义</description>
+							<value>classpath:sql/sql-map-paas-dev-config.xml</value>
+						</list>
+					</property>
+				</bean>
+			</property>
+			<property name="sqlExecutor">
+				<bean class="com.binary.framework.ibatis.IBatisSqlExecutor">
+					<property name="sqlHandlers">
+						<list>
+							<bean class="com.binary.framework.ibatis.PagingSqlHandler" />
+						</list>
+					</property>
+				</bean>
+			</property>
+		</bean>
+        
+        
+        
+        <!-- DAO -->
+        <bean abstract="true" id="dao.paas.dev.parent" >
+			<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate_paas_dev"/>
+		</bean>
+		
+		
+			    
+	    <!-- dev -->
+	    <bean class="com.aic.paas.dev.provider.db.impl.PcBuildDefDaoImpl" parent="dao.paas.dev.parent" >
+			<property name="daoDefinition" ref="com.aic.paas.dev.provider.db.impl.PcBuildDefDaoDefinition" />
+		</bean>
+		<bean class="com.aic.paas.dev.provider.db.impl.PcBuildTaskDaoImpl" parent="dao.paas.dev.parent" >
+			<property name="daoDefinition" ref="com.aic.paas.dev.provider.db.impl.PcBuildTaskDaoDefinition" />
+		</bean>
+		<bean class="com.aic.paas.dev.provider.db.impl.PcBuildTaskLogDaoImpl" parent="dao.paas.dev.parent" >
+			<property name="daoDefinition" ref="com.aic.paas.dev.provider.db.impl.PcBuildTaskLogDaoDefinition" />
+		</bean>
+		<bean class="com.aic.paas.dev.provider.db.impl.PcImageDaoImpl" parent="dao.paas.dev.parent" >
+			<property name="daoDefinition" ref="com.aic.paas.dev.provider.db.impl.PcImageDaoDefinition" />
+		</bean>
+		<bean class="com.aic.paas.dev.provider.db.impl.PcImageDefDaoImpl" parent="dao.paas.dev.parent" >
+			<property name="daoDefinition" ref="com.aic.paas.dev.provider.db.impl.PcImageDefDaoDefinition" />
+		</bean>
+		<bean class="com.aic.paas.dev.provider.db.impl.PcImageDeployDaoImpl" parent="dao.paas.dev.parent" >
+			<property name="daoDefinition" ref="com.aic.paas.dev.provider.db.impl.PcImageDeployDaoDefinition" />
+		</bean>
+		<bean class="com.aic.paas.dev.provider.db.impl.PcProductDaoImpl" parent="dao.paas.dev.parent" >
+			<property name="daoDefinition" ref="com.aic.paas.dev.provider.db.impl.PcProductDaoDefinition" />
+		</bean>
+		<bean class="com.aic.paas.dev.provider.db.impl.PcProductMgrDaoImpl" parent="dao.paas.dev.parent" >
+			<property name="daoDefinition" ref="com.aic.paas.dev.provider.db.impl.PcProductMgrDaoDefinition" />
+		</bean>
+		<bean class="com.aic.paas.dev.provider.db.impl.PcProjectDaoImpl" parent="dao.paas.dev.parent" >
+			<property name="daoDefinition" ref="com.aic.paas.dev.provider.db.impl.PcProjectDaoDefinition" />
+		</bean>
+		<bean class="com.aic.paas.dev.provider.db.impl.PcProjectMgrDaoImpl" parent="dao.paas.dev.parent" >
+			<property name="daoDefinition" ref="com.aic.paas.dev.provider.db.impl.PcProjectMgrDaoDefinition" />
+		</bean>
+	    <bean class="com.aic.paas.dev.provider.db.impl.VcMntRepositoryApplyDaoImpl" parent="dao.paas.dev.parent" >
+			<property name="daoDefinition" ref="com.aic.paas.dev.provider.db.impl.VcMntRepositoryApplyDaoDefinition" />
+		</bean>
+	    
+	    
+	    
+		
+</beans>
