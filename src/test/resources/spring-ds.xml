@@ -24,7 +24,7 @@
 					<list>
 						<bean class="com.binary.jdbc.ds.support.PoolDataSource">
 							<constructor-arg value="${ds.jdbc.paas.dev.dsname}" />	<!-- name -->
-							<constructor-arg value="Oracle10G" />	<!-- jdbcType -->
+							<constructor-arg value="${ds.jdbc.paas.dev.dstype}" />	<!-- jdbcType -->
 							<constructor-arg value="org.apache.commons.dbcp.BasicDataSource" />	<!-- poolClass -->
 							<constructor-arg>				<!-- properties -->
 								<map>
