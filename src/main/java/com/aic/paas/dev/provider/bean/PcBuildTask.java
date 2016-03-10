@@ -26,6 +26,12 @@ public class PcBuildTask implements EntityBean {
 
 
 	/**
+	 * mapping-field: 所属镜像定义[IMAGE_DEF_ID]
+	 */
+	private Long imageDefId;
+
+
+	/**
 	 * mapping-field: 构建代码版本[CODE_VERSION]
 	 */
 	private String codeVersion;
@@ -70,7 +76,7 @@ public class PcBuildTask implements EntityBean {
 
 	/**
 	 * mapping-field: 任务状态[STATUS]
-	 * 1=就绪 2=运行中 3=结束
+	 * 1=就绪 2=构建运行中 3=构建中断中 4=成功 5=失败
 	 */
 	private Integer status;
 
@@ -96,6 +102,18 @@ public class PcBuildTask implements EntityBean {
 	private Long modifyTime;
 
 
+	/**
+	 * mapping-field: 构建TAG[DEP_TAG]
+	 */
+	private String depTag;
+
+
+	/**
+	 * mapping-field: 构建返回BUILD_ID[BACK_BUILD_ID]
+	 */
+	private String backBuildId;
+
+
 
 
 	public Long getId() {
@@ -111,6 +129,14 @@ public class PcBuildTask implements EntityBean {
 	}
 	public void setBuildDefId(Long buildDefId) {
 		this.buildDefId = buildDefId;
+	}
+
+
+	public Long getImageDefId() {
+		return this.imageDefId;
+	}
+	public void setImageDefId(Long imageDefId) {
+		this.imageDefId = imageDefId;
 	}
 
 
@@ -199,6 +225,22 @@ public class PcBuildTask implements EntityBean {
 	}
 	public void setModifyTime(Long modifyTime) {
 		this.modifyTime = modifyTime;
+	}
+
+
+	public String getDepTag() {
+		return this.depTag;
+	}
+	public void setDepTag(String depTag) {
+		this.depTag = depTag;
+	}
+
+
+	public String getBackBuildId() {
+		return this.backBuildId;
+	}
+	public void setBackBuildId(String backBuildId) {
+		this.backBuildId = backBuildId;
 	}
 
 
