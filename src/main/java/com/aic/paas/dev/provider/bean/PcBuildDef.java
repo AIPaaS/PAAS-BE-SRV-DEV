@@ -26,6 +26,12 @@ public class PcBuildDef implements EntityBean {
 
 
 	/**
+	 * mapping-field: 镜像定义ID[IMAGE_DEF_ID]
+	 */
+	private Long imageDefId;
+
+
+	/**
 	 * mapping-field: 构建名[BUILD_NAME]
 	 */
 	private String buildName;
@@ -65,6 +71,12 @@ public class PcBuildDef implements EntityBean {
 
 
 	/**
+	 * mapping-field: 分支[RESP_BRANCH]
+	 */
+	private String respBranch;
+
+
+	/**
 	 * mapping-field: 代码库账号[RESP_USER]
 	 */
 	private String respUser;
@@ -96,12 +108,6 @@ public class PcBuildDef implements EntityBean {
 
 
 	/**
-	 * mapping-field: 镜像定义ID[IMAGE_DEF_ID]
-	 */
-	private Long imageDefId;
-
-
-	/**
 	 * mapping-field: DOCKER_FILE路径[DOCKER_FILE_PATH]
 	 */
 	private String dockerFilePath;
@@ -123,6 +129,20 @@ public class PcBuildDef implements EntityBean {
 	 * mapping-field: 开发环境资源中心[RES_CENTER_ID]
 	 */
 	private Long resCenterId;
+
+
+	/**
+	 * mapping-field: 开启构建缓存[OPEN_CACHE]
+	 * 1-开启 0-不开启
+	 */
+	private Integer openCache;
+
+
+	/**
+	 * mapping-field: 开启构建通知邮件[OPEN_EMAIL]
+	 * 1-通知 0-不通知
+	 */
+	private Integer openEmail;
 
 
 	/**
@@ -158,6 +178,12 @@ public class PcBuildDef implements EntityBean {
 	private Long modifyTime;
 
 
+	/**
+	 * mapping-field: 构建TAG[DEP_TAG]
+	 */
+	private String depTag;
+
+
 
 
 	public Long getId() {
@@ -173,6 +199,14 @@ public class PcBuildDef implements EntityBean {
 	}
 	public void setMntId(Long mntId) {
 		this.mntId = mntId;
+	}
+
+
+	public Long getImageDefId() {
+		return this.imageDefId;
+	}
+	public void setImageDefId(Long imageDefId) {
+		this.imageDefId = imageDefId;
 	}
 
 
@@ -224,6 +258,14 @@ public class PcBuildDef implements EntityBean {
 	}
 
 
+	public String getRespBranch() {
+		return this.respBranch;
+	}
+	public void setRespBranch(String respBranch) {
+		this.respBranch = respBranch;
+	}
+
+
 	public String getRespUser() {
 		return this.respUser;
 	}
@@ -264,14 +306,6 @@ public class PcBuildDef implements EntityBean {
 	}
 
 
-	public Long getImageDefId() {
-		return this.imageDefId;
-	}
-	public void setImageDefId(Long imageDefId) {
-		this.imageDefId = imageDefId;
-	}
-
-
 	public String getDockerFilePath() {
 		return this.dockerFilePath;
 	}
@@ -301,6 +335,22 @@ public class PcBuildDef implements EntityBean {
 	}
 	public void setResCenterId(Long resCenterId) {
 		this.resCenterId = resCenterId;
+	}
+
+
+	public Integer getOpenCache() {
+		return this.openCache;
+	}
+	public void setOpenCache(Integer openCache) {
+		this.openCache = openCache;
+	}
+
+
+	public Integer getOpenEmail() {
+		return this.openEmail;
+	}
+	public void setOpenEmail(Integer openEmail) {
+		this.openEmail = openEmail;
 	}
 
 
@@ -341,6 +391,14 @@ public class PcBuildDef implements EntityBean {
 	}
 	public void setModifyTime(Long modifyTime) {
 		this.modifyTime = modifyTime;
+	}
+
+
+	public String getDepTag() {
+		return this.depTag;
+	}
+	public void setDepTag(String depTag) {
+		this.depTag = depTag;
 	}
 
 
