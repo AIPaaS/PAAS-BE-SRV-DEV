@@ -212,18 +212,18 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 			BinaryUtils.checkEmpty(record.getRespUrl(), "record.respUrl");
 			BinaryUtils.checkEmpty(record.getRespUser(), "record.respUser");
 			BinaryUtils.checkEmpty(record.getRespPwd(), "record.respPwd");
-			BinaryUtils.checkEmpty(record.getBuildCmd(), "record.buildCmd");
-			BinaryUtils.checkEmpty(record.getIsSupportHook(), "record.isSupportHook");
-			BinaryUtils.checkEmpty(record.getIsBuildImage(), "record.isBuildImage");
-			if(record.getIsBuildImage().intValue() == 1) {
+//			BinaryUtils.checkEmpty(record.getBuildCmd(), "record.buildCmd");
+//			BinaryUtils.checkEmpty(record.getIsSupportHook(), "record.isSupportHook");
+//			BinaryUtils.checkEmpty(record.getIsBuildImage(), "record.isBuildImage");
+//			if(record.getIsBuildImage().intValue() == 1) {
 				BinaryUtils.checkEmpty(record.getImageDefId(), "record.imageDefId");
 				BinaryUtils.checkEmpty(record.getDockerFilePath(), "record.dockerFilePath");
-				BinaryUtils.checkEmpty(record.getIsAutoPush1(), "record.isAutoPush1");
-				if(record.getIsAutoPush1().intValue() == 1) {
-					BinaryUtils.checkEmpty(record.getDataCenterId(), "record.dataCenterId");
-					BinaryUtils.checkEmpty(record.getResCenterId(), "record.resCenterId");
-				}
-			}
+//				BinaryUtils.checkEmpty(record.getIsAutoPush1(), "record.isAutoPush1");
+//				if(record.getIsAutoPush1().intValue() == 1) {
+//					BinaryUtils.checkEmpty(record.getDataCenterId(), "record.dataCenterId");
+//					BinaryUtils.checkEmpty(record.getResCenterId(), "record.resCenterId");
+//				}
+//			}
 		}else {
 			if(record.getBuildName() != null) BinaryUtils.checkEmpty(record.getBuildName(), "record.buildName");
 			if(record.getIsExternal() != null) BinaryUtils.checkEmpty(record.getIsExternal(), "record.isExternal");
@@ -233,14 +233,14 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 			if(record.getRespUrl() != null) BinaryUtils.checkEmpty(record.getRespUrl(), "record.respUrl");
 			if(record.getRespUser() != null) BinaryUtils.checkEmpty(record.getRespUser(), "record.respUser");
 			if(record.getRespPwd() != null) BinaryUtils.checkEmpty(record.getRespPwd(), "record.respPwd");
-			if(record.getBuildCmd() != null) BinaryUtils.checkEmpty(record.getBuildCmd(), "record.buildCmd");
-			if(record.getIsSupportHook() != null) BinaryUtils.checkEmpty(record.getIsSupportHook(), "record.isSupportHook");
-			if(record.getIsBuildImage() != null) BinaryUtils.checkEmpty(record.getIsBuildImage(), "record.isBuildImage");
+//			if(record.getBuildCmd() != null) BinaryUtils.checkEmpty(record.getBuildCmd(), "record.buildCmd");
+//			if(record.getIsSupportHook() != null) BinaryUtils.checkEmpty(record.getIsSupportHook(), "record.isSupportHook");
+//			if(record.getIsBuildImage() != null) BinaryUtils.checkEmpty(record.getIsBuildImage(), "record.isBuildImage");
 			if(record.getImageDefId() != null) BinaryUtils.checkEmpty(record.getImageDefId(), "record.imageDefId");
 			if(record.getDockerFilePath() != null) BinaryUtils.checkEmpty(record.getDockerFilePath(), "record.dockerFilePath");
-			if(record.getIsAutoPush1() != null) BinaryUtils.checkEmpty(record.getIsAutoPush1(), "record.isAutoPush1");
-			if(record.getDataCenterId() != null) BinaryUtils.checkEmpty(record.getDataCenterId(), "record.dataCenterId");
-			if(record.getResCenterId() != null) BinaryUtils.checkEmpty(record.getResCenterId(), "record.resCenterId");
+//			if(record.getIsAutoPush1() != null) BinaryUtils.checkEmpty(record.getIsAutoPush1(), "record.isAutoPush1");
+//			if(record.getDataCenterId() != null) BinaryUtils.checkEmpty(record.getDataCenterId(), "record.dataCenterId");
+//			if(record.getResCenterId() != null) BinaryUtils.checkEmpty(record.getResCenterId(), "record.resCenterId");
 		}
 		
 		Long id = record.getId();
