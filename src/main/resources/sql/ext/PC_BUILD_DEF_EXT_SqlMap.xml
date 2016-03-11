@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PC_BUILD_DEF">
+
+
+	
+	
+	<select id="selectListByFullBuildName" parameterClass="java.util.Map" resultMap="queryResult">
+		select 
+			<include refid="PC_BUILD_DEF.sql_query_columns" />
+		from PC_BUILD_DEF 
+		where BUILD_NAME = #fullBuildName:VARCHAR#
+			<include refid="PC_BUILD_DEF.sql_query_where"/>
+		order by 
+			<isNotEmpty property="orders" >
+				$orders$
+			</isNotEmpty>
+			<isEmpty property="orders" >
+				ID
+			</isEmpty>
+	</select>
+
+
+
+</sqlMap>
