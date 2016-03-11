@@ -250,8 +250,7 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 			
 			CPcBuildDef cdt = new CPcBuildDef();
 			cdt.setMntId(record.getMntId());
-			cdt.setBuildNameEqual(name);
-			List<PcBuildDef> ls = buildDefDao.selectList(cdt, null);
+			List<PcBuildDef> ls = buildDefDao.selectListByFullBuildName(name, cdt, null);
 			if(ls.size()>0 && (id==null || ls.size()>1 || ls.get(0).getId().longValue()!=id.longValue())) {
 				throw new ServiceException(" is exists build-name '"+name+"'! ");
 			}

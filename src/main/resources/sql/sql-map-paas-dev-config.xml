@@ -32,6 +32,8 @@
 	<sqlMap resource="sql/ext/PC_PROJECT_EXT_SqlMap.xml" />
 	<sqlMap resource="sql/ext/PC_IMAGE_DEF_SqlMap.xml" />
 	<sqlMap resource="sql/ext/PC_IMAGE_EXT_SqlMap.xml" />
+	<sqlMap resource="sql/ext/PC_BUILD_DEF_EXT_SqlMap.xml" />
+	
 	
 	
 	
