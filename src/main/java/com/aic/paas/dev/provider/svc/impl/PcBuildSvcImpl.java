@@ -212,6 +212,9 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 			BinaryUtils.checkEmpty(record.getRespUrl(), "record.respUrl");
 			BinaryUtils.checkEmpty(record.getRespUser(), "record.respUser");
 			BinaryUtils.checkEmpty(record.getRespPwd(), "record.respPwd");
+			
+			BinaryUtils.checkEmpty(record.getRespBranch(), "record.respBranch");
+			BinaryUtils.checkEmpty(record.getDepTag(), "record.depTag");
 //			BinaryUtils.checkEmpty(record.getBuildCmd(), "record.buildCmd");
 //			BinaryUtils.checkEmpty(record.getIsSupportHook(), "record.isSupportHook");
 //			BinaryUtils.checkEmpty(record.getIsBuildImage(), "record.isBuildImage");
