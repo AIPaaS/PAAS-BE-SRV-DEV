@@ -26,7 +26,6 @@ import com.aic.paas.dev.provider.db.PcProjectDao;
 import com.aic.paas.dev.provider.svc.PcBuildSvc;
 import com.aic.paas.dev.provider.svc.bean.PcBuildDefInfo;
 import com.binary.core.util.BinaryUtils;
-import com.binary.framework.exception.ServiceException;
 import com.binary.jdbc.Page;
 
 public class PcBuildSvcImpl implements PcBuildSvc {
@@ -230,17 +229,16 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 			if(record.getDockerFilePath() != null) BinaryUtils.checkEmpty(record.getDockerFilePath(), "record.dockerFilePath");
 		}
 		
-		Long id = record.getId();
+//		Long id = record.getId();
 		if(record.getBuildName() != null) {
 			String name = record.getBuildName().trim();
 			record.setBuildName(name);
-			
-			CPcBuildDef cdt = new CPcBuildDef();
-			cdt.setMntId(record.getMntId());
-			List<PcBuildDef> ls = buildDefDao.selectListByFullBuildName(name, cdt, null);
-			if(ls.size()>0 && (id==null || ls.size()>1 || ls.get(0).getId().longValue()!=id.longValue())) {
-				throw new ServiceException(" is exists build-name '"+name+"'! ");
-			}
+//			CPcBuildDef cdt = new CPcBuildDef();
+//			cdt.setMntId(record.getMntId());
+//			List<PcBuildDef> ls = buildDefDao.selectListByFullBuildName(name, cdt, null);
+//			if(ls.size()>0 && (id==null || ls.size()>1 || ls.get(0).getId().longValue()!=id.longValue())) {
+//				throw new ServiceException(" is exists build-name '"+name+"'! ");
+//			}
 		}
 		
 		return buildDefDao.save(record);
