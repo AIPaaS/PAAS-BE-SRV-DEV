@@ -60,6 +60,29 @@ public class CPcBuildTask implements Condition {
 
 
 	/**
+	 * condition-field: 所属镜像定义[IMAGE_DEF_ID] operate-Equal[=]
+	 */
+	private Long imageDefId;
+
+
+	/**
+	 * condition-field: 所属镜像定义[IMAGE_DEF_ID] operate-In[in]
+	 */
+	private Long[] imageDefIds;
+
+
+	/**
+	 * condition-field: 所属镜像定义[IMAGE_DEF_ID] operate-GTEqual[>=]
+	 */
+	private Long startImageDefId;
+
+	/**
+	 * condition-field: 所属镜像定义[IMAGE_DEF_ID] operate-LTEqual[<=]
+	 */
+	private Long endImageDefId;
+
+
+	/**
 	 * condition-field: 构建代码版本[CODE_VERSION] operate-Like[like]
 	 */
 	private String codeVersion;
@@ -216,27 +239,27 @@ public class CPcBuildTask implements Condition {
 
 	/**
 	 * condition-field: 任务状态[STATUS] operate-Equal[=]
-	 * 1=就绪 2=运行中 3=结束
+	 * 1=就绪 2=构建运行中 3=构建中断中 4=成功 5=失败
 	 */
 	private Integer status;
 
 
 	/**
 	 * condition-field: 任务状态[STATUS] operate-In[in]
-	 * 1=就绪 2=运行中 3=结束
+	 * 1=就绪 2=构建运行中 3=构建中断中 4=成功 5=失败
 	 */
 	private Integer[] statuss;
 
 
 	/**
 	 * condition-field: 任务状态[STATUS] operate-GTEqual[>=]
-	 * 1=就绪 2=运行中 3=结束
+	 * 1=就绪 2=构建运行中 3=构建中断中 4=成功 5=失败
 	 */
 	private Integer startStatus;
 
 	/**
 	 * condition-field: 任务状态[STATUS] operate-LTEqual[<=]
-	 * 1=就绪 2=运行中 3=结束
+	 * 1=就绪 2=构建运行中 3=构建中断中 4=成功 5=失败
 	 */
 	private Integer endStatus;
 
@@ -322,6 +345,42 @@ public class CPcBuildTask implements Condition {
 	private Long endModifyTime;
 
 
+	/**
+	 * condition-field: 构建TAG[DEP_TAG] operate-Like[like]
+	 */
+	private String depTag;
+
+
+	/**
+	 * condition-field: 构建TAG[DEP_TAG] operate-Equal[=]
+	 */
+	private String depTagEqual;
+
+
+	/**
+	 * condition-field: 构建TAG[DEP_TAG] operate-In[in]
+	 */
+	private String[] depTags;
+
+
+	/**
+	 * condition-field: 构建返回BUILD_ID[BACK_BUILD_ID] operate-Like[like]
+	 */
+	private String backBuildId;
+
+
+	/**
+	 * condition-field: 构建返回BUILD_ID[BACK_BUILD_ID] operate-Equal[=]
+	 */
+	private String backBuildIdEqual;
+
+
+	/**
+	 * condition-field: 构建返回BUILD_ID[BACK_BUILD_ID] operate-In[in]
+	 */
+	private String[] backBuildIds;
+
+
 
 
 	public Long getId() {
@@ -385,6 +444,38 @@ public class CPcBuildTask implements Condition {
 	}
 	public void setEndBuildDefId(Long endBuildDefId) {
 		this.endBuildDefId = endBuildDefId;
+	}
+
+
+	public Long getImageDefId() {
+		return this.imageDefId;
+	}
+	public void setImageDefId(Long imageDefId) {
+		this.imageDefId = imageDefId;
+	}
+
+
+	public Long[] getImageDefIds() {
+		return this.imageDefIds;
+	}
+	public void setImageDefIds(Long[] imageDefIds) {
+		this.imageDefIds = imageDefIds;
+	}
+
+
+	public Long getStartImageDefId() {
+		return this.startImageDefId;
+	}
+	public void setStartImageDefId(Long startImageDefId) {
+		this.startImageDefId = startImageDefId;
+	}
+
+
+	public Long getEndImageDefId() {
+		return this.endImageDefId;
+	}
+	public void setEndImageDefId(Long endImageDefId) {
+		this.endImageDefId = endImageDefId;
 	}
 
 
@@ -721,6 +812,54 @@ public class CPcBuildTask implements Condition {
 	}
 	public void setEndModifyTime(Long endModifyTime) {
 		this.endModifyTime = endModifyTime;
+	}
+
+
+	public String getDepTag() {
+		return this.depTag;
+	}
+	public void setDepTag(String depTag) {
+		this.depTag = depTag;
+	}
+
+
+	public String getDepTagEqual() {
+		return this.depTagEqual;
+	}
+	public void setDepTagEqual(String depTagEqual) {
+		this.depTagEqual = depTagEqual;
+	}
+
+
+	public String[] getDepTags() {
+		return this.depTags;
+	}
+	public void setDepTags(String[] depTags) {
+		this.depTags = depTags;
+	}
+
+
+	public String getBackBuildId() {
+		return this.backBuildId;
+	}
+	public void setBackBuildId(String backBuildId) {
+		this.backBuildId = backBuildId;
+	}
+
+
+	public String getBackBuildIdEqual() {
+		return this.backBuildIdEqual;
+	}
+	public void setBackBuildIdEqual(String backBuildIdEqual) {
+		this.backBuildIdEqual = backBuildIdEqual;
+	}
+
+
+	public String[] getBackBuildIds() {
+		return this.backBuildIds;
+	}
+	public void setBackBuildIds(String[] backBuildIds) {
+		this.backBuildIds = backBuildIds;
 	}
 
 

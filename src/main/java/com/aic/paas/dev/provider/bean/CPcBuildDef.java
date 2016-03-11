@@ -60,21 +60,32 @@ public class CPcBuildDef implements Condition {
 
 
 	/**
+	 * condition-field: 镜像定义ID[IMAGE_DEF_ID] operate-Equal[=]
+	 */
+	private Long imageDefId;
+
+
+	/**
+	 * condition-field: 镜像定义ID[IMAGE_DEF_ID] operate-In[in]
+	 */
+	private Long[] imageDefIds;
+
+
+	/**
+	 * condition-field: 镜像定义ID[IMAGE_DEF_ID] operate-GTEqual[>=]
+	 */
+	private Long startImageDefId;
+
+	/**
+	 * condition-field: 镜像定义ID[IMAGE_DEF_ID] operate-LTEqual[<=]
+	 */
+	private Long endImageDefId;
+
+
+	/**
 	 * condition-field: 构建名[BUILD_NAME] operate-Like[like]
 	 */
 	private String buildName;
-
-
-	/**
-	 * condition-field: 构建名[BUILD_NAME] operate-Equal[=]
-	 */
-	private String buildNameEqual;
-
-
-	/**
-	 * condition-field: 构建名[BUILD_NAME] operate-In[in]
-	 */
-	private String[] buildNames;
 
 
 	/**
@@ -185,6 +196,12 @@ public class CPcBuildDef implements Condition {
 
 
 	/**
+	 * condition-field: 分支[RESP_BRANCH] operate-Like[like]
+	 */
+	private String respBranch;
+
+
+	/**
 	 * condition-field: 代码库账号[RESP_USER] operate-Like[like]
 	 */
 	private String respUser;
@@ -274,29 +291,6 @@ public class CPcBuildDef implements Condition {
 
 
 	/**
-	 * condition-field: 镜像定义ID[IMAGE_DEF_ID] operate-Equal[=]
-	 */
-	private Long imageDefId;
-
-
-	/**
-	 * condition-field: 镜像定义ID[IMAGE_DEF_ID] operate-In[in]
-	 */
-	private Long[] imageDefIds;
-
-
-	/**
-	 * condition-field: 镜像定义ID[IMAGE_DEF_ID] operate-GTEqual[>=]
-	 */
-	private Long startImageDefId;
-
-	/**
-	 * condition-field: 镜像定义ID[IMAGE_DEF_ID] operate-LTEqual[<=]
-	 */
-	private Long endImageDefId;
-
-
-	/**
 	 * condition-field: DOCKER_FILE路径[DOCKER_FILE_PATH] operate-Like[like]
 	 */
 	private String dockerFilePath;
@@ -369,6 +363,60 @@ public class CPcBuildDef implements Condition {
 	 * condition-field: 开发环境资源中心[RES_CENTER_ID] operate-LTEqual[<=]
 	 */
 	private Long endResCenterId;
+
+
+	/**
+	 * condition-field: 开启构建缓存[OPEN_CACHE] operate-Equal[=]
+	 * 1-开启 0-不开启
+	 */
+	private Integer openCache;
+
+
+	/**
+	 * condition-field: 开启构建缓存[OPEN_CACHE] operate-In[in]
+	 * 1-开启 0-不开启
+	 */
+	private Integer[] openCaches;
+
+
+	/**
+	 * condition-field: 开启构建缓存[OPEN_CACHE] operate-GTEqual[>=]
+	 * 1-开启 0-不开启
+	 */
+	private Integer startOpenCache;
+
+	/**
+	 * condition-field: 开启构建缓存[OPEN_CACHE] operate-LTEqual[<=]
+	 * 1-开启 0-不开启
+	 */
+	private Integer endOpenCache;
+
+
+	/**
+	 * condition-field: 开启构建通知邮件[OPEN_EMAIL] operate-Equal[=]
+	 * 1-通知 0-不通知
+	 */
+	private Integer openEmail;
+
+
+	/**
+	 * condition-field: 开启构建通知邮件[OPEN_EMAIL] operate-In[in]
+	 * 1-通知 0-不通知
+	 */
+	private Integer[] openEmails;
+
+
+	/**
+	 * condition-field: 开启构建通知邮件[OPEN_EMAIL] operate-GTEqual[>=]
+	 * 1-通知 0-不通知
+	 */
+	private Integer startOpenEmail;
+
+	/**
+	 * condition-field: 开启构建通知邮件[OPEN_EMAIL] operate-LTEqual[<=]
+	 * 1-通知 0-不通知
+	 */
+	private Integer endOpenEmail;
 
 
 	/**
@@ -464,6 +512,24 @@ public class CPcBuildDef implements Condition {
 	private Long endModifyTime;
 
 
+	/**
+	 * condition-field: 构建TAG[DEP_TAG] operate-Like[like]
+	 */
+	private String depTag;
+
+
+	/**
+	 * condition-field: 构建TAG[DEP_TAG] operate-Equal[=]
+	 */
+	private String depTagEqual;
+
+
+	/**
+	 * condition-field: 构建TAG[DEP_TAG] operate-In[in]
+	 */
+	private String[] depTags;
+
+
 
 
 	public Long getId() {
@@ -530,27 +596,43 @@ public class CPcBuildDef implements Condition {
 	}
 
 
+	public Long getImageDefId() {
+		return this.imageDefId;
+	}
+	public void setImageDefId(Long imageDefId) {
+		this.imageDefId = imageDefId;
+	}
+
+
+	public Long[] getImageDefIds() {
+		return this.imageDefIds;
+	}
+	public void setImageDefIds(Long[] imageDefIds) {
+		this.imageDefIds = imageDefIds;
+	}
+
+
+	public Long getStartImageDefId() {
+		return this.startImageDefId;
+	}
+	public void setStartImageDefId(Long startImageDefId) {
+		this.startImageDefId = startImageDefId;
+	}
+
+
+	public Long getEndImageDefId() {
+		return this.endImageDefId;
+	}
+	public void setEndImageDefId(Long endImageDefId) {
+		this.endImageDefId = endImageDefId;
+	}
+
+
 	public String getBuildName() {
 		return this.buildName;
 	}
 	public void setBuildName(String buildName) {
 		this.buildName = buildName;
-	}
-
-
-	public String getBuildNameEqual() {
-		return this.buildNameEqual;
-	}
-	public void setBuildNameEqual(String buildNameEqual) {
-		this.buildNameEqual = buildNameEqual;
-	}
-
-
-	public String[] getBuildNames() {
-		return this.buildNames;
-	}
-	public void setBuildNames(String[] buildNames) {
-		this.buildNames = buildNames;
 	}
 
 
@@ -690,6 +772,14 @@ public class CPcBuildDef implements Condition {
 	}
 
 
+	public String getRespBranch() {
+		return this.respBranch;
+	}
+	public void setRespBranch(String respBranch) {
+		this.respBranch = respBranch;
+	}
+
+
 	public String getRespUser() {
 		return this.respUser;
 	}
@@ -810,38 +900,6 @@ public class CPcBuildDef implements Condition {
 	}
 
 
-	public Long getImageDefId() {
-		return this.imageDefId;
-	}
-	public void setImageDefId(Long imageDefId) {
-		this.imageDefId = imageDefId;
-	}
-
-
-	public Long[] getImageDefIds() {
-		return this.imageDefIds;
-	}
-	public void setImageDefIds(Long[] imageDefIds) {
-		this.imageDefIds = imageDefIds;
-	}
-
-
-	public Long getStartImageDefId() {
-		return this.startImageDefId;
-	}
-	public void setStartImageDefId(Long startImageDefId) {
-		this.startImageDefId = startImageDefId;
-	}
-
-
-	public Long getEndImageDefId() {
-		return this.endImageDefId;
-	}
-	public void setEndImageDefId(Long endImageDefId) {
-		this.endImageDefId = endImageDefId;
-	}
-
-
 	public String getDockerFilePath() {
 		return this.dockerFilePath;
 	}
@@ -943,6 +1001,70 @@ public class CPcBuildDef implements Condition {
 	}
 	public void setEndResCenterId(Long endResCenterId) {
 		this.endResCenterId = endResCenterId;
+	}
+
+
+	public Integer getOpenCache() {
+		return this.openCache;
+	}
+	public void setOpenCache(Integer openCache) {
+		this.openCache = openCache;
+	}
+
+
+	public Integer[] getOpenCaches() {
+		return this.openCaches;
+	}
+	public void setOpenCaches(Integer[] openCaches) {
+		this.openCaches = openCaches;
+	}
+
+
+	public Integer getStartOpenCache() {
+		return this.startOpenCache;
+	}
+	public void setStartOpenCache(Integer startOpenCache) {
+		this.startOpenCache = startOpenCache;
+	}
+
+
+	public Integer getEndOpenCache() {
+		return this.endOpenCache;
+	}
+	public void setEndOpenCache(Integer endOpenCache) {
+		this.endOpenCache = endOpenCache;
+	}
+
+
+	public Integer getOpenEmail() {
+		return this.openEmail;
+	}
+	public void setOpenEmail(Integer openEmail) {
+		this.openEmail = openEmail;
+	}
+
+
+	public Integer[] getOpenEmails() {
+		return this.openEmails;
+	}
+	public void setOpenEmails(Integer[] openEmails) {
+		this.openEmails = openEmails;
+	}
+
+
+	public Integer getStartOpenEmail() {
+		return this.startOpenEmail;
+	}
+	public void setStartOpenEmail(Integer startOpenEmail) {
+		this.startOpenEmail = startOpenEmail;
+	}
+
+
+	public Integer getEndOpenEmail() {
+		return this.endOpenEmail;
+	}
+	public void setEndOpenEmail(Integer endOpenEmail) {
+		this.endOpenEmail = endOpenEmail;
 	}
 
 
@@ -1055,6 +1177,30 @@ public class CPcBuildDef implements Condition {
 	}
 	public void setEndModifyTime(Long endModifyTime) {
 		this.endModifyTime = endModifyTime;
+	}
+
+
+	public String getDepTag() {
+		return this.depTag;
+	}
+	public void setDepTag(String depTag) {
+		this.depTag = depTag;
+	}
+
+
+	public String getDepTagEqual() {
+		return this.depTagEqual;
+	}
+	public void setDepTagEqual(String depTagEqual) {
+		this.depTagEqual = depTagEqual;
+	}
+
+
+	public String[] getDepTags() {
+		return this.depTags;
+	}
+	public void setDepTags(String[] depTags) {
+		this.depTags = depTags;
 	}
 
 

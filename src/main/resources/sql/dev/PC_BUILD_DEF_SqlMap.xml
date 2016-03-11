@@ -6,27 +6,31 @@
 	<resultMap class="com.aic.paas.dev.provider.bean.PcBuildDef" id="queryResult">
 		<result column="ID" jdbcType="BIGINT" property="id"/>	<!-- ID -->
 		<result column="MNT_ID" jdbcType="BIGINT" property="mntId"/>	<!-- 所属租户 -->
+		<result column="IMAGE_DEF_ID" jdbcType="BIGINT" property="imageDefId"/>	<!-- 镜像定义ID -->
 		<result column="BUILD_NAME" jdbcType="VARCHAR" property="buildName"/>	<!-- 构建名 -->
 		<result column="PRODUCT_ID" jdbcType="BIGINT" property="productId"/>	<!-- 所属产品 -->
 		<result column="PROJECT_ID" jdbcType="BIGINT" property="projectId"/>	<!-- 所属工程 -->
 		<result column="IS_EXTERNAL" jdbcType="INTEGER" property="isExternal"/>	<!-- 是否外部工程 -->
 		<result column="RESP_TYPE" jdbcType="INTEGER" property="respType"/>	<!-- 代码库类型 -->
 		<result column="RESP_URL" jdbcType="VARCHAR" property="respUrl"/>	<!-- 代码库URL -->
+		<result column="RESP_BRANCH" jdbcType="VARCHAR" property="respBranch"/>	<!-- 分支 -->
 		<result column="RESP_USER" jdbcType="VARCHAR" property="respUser"/>	<!-- 代码库账号 -->
 		<result column="RESP_PWD" jdbcType="VARCHAR" property="respPwd"/>	<!-- 代码库密码 -->
 		<result column="BUILD_CMD" jdbcType="VARCHAR" property="buildCmd"/>	<!-- 构建命令 -->
 		<result column="IS_SUPPORT_HOOK" jdbcType="INTEGER" property="isSupportHook"/>	<!-- 是否支持HOOK -->
 		<result column="IS_BUILD_IMAGE" jdbcType="INTEGER" property="isBuildImage"/>	<!-- 是否生成镜像 -->
-		<result column="IMAGE_DEF_ID" jdbcType="BIGINT" property="imageDefId"/>	<!-- 镜像定义ID -->
 		<result column="DOCKER_FILE_PATH" jdbcType="VARCHAR" property="dockerFilePath"/>	<!-- DOCKER_FILE路径 -->
 		<result column="IS_AUTO_PUSH_1" jdbcType="INTEGER" property="isAutoPush1"/>	<!-- 是否自动推送至开发环境 -->
 		<result column="DATA_CENTER_ID" jdbcType="BIGINT" property="dataCenterId"/>	<!-- 开发环境数据中心 -->
 		<result column="RES_CENTER_ID" jdbcType="BIGINT" property="resCenterId"/>	<!-- 开发环境资源中心 -->
+		<result column="OPEN_CACHE" jdbcType="INTEGER" property="openCache"/>	<!-- 开启构建缓存 -->
+		<result column="OPEN_EMAIL" jdbcType="INTEGER" property="openEmail"/>	<!-- 开启构建通知邮件 -->
 		<result column="DATA_STATUS" jdbcType="INTEGER" property="dataStatus"/>	<!-- 数据状态 -->
 		<result column="CREATOR" jdbcType="VARCHAR" property="creator"/>	<!-- 创建人 -->
 		<result column="CREATE_TIME" jdbcType="BIGINT" property="createTime"/>	<!-- 创建时间 -->
 		<result column="MODIFIER" jdbcType="VARCHAR" property="modifier"/>	<!-- 修改人 -->
 		<result column="MODIFY_TIME" jdbcType="BIGINT" property="modifyTime"/>	<!-- 修改时间 -->
+		<result column="DEP_TAG" jdbcType="VARCHAR" property="depTag"/>	<!-- 构建TAG -->
 	</resultMap>
 	
 
@@ -55,14 +59,20 @@
 		<isNotEmpty prepend="and" property="cdt.endMntId" >
 			<![CDATA[ MNT_ID <= #cdt.endMntId:BIGINT# ]]>
 		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.imageDefId" >
+			IMAGE_DEF_ID = #cdt.imageDefId:BIGINT#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="imageDefIds" >
+			IMAGE_DEF_ID in ($imageDefIds$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startImageDefId" >
+			<![CDATA[ IMAGE_DEF_ID >= #cdt.startImageDefId:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endImageDefId" >
+			<![CDATA[ IMAGE_DEF_ID <= #cdt.endImageDefId:BIGINT# ]]>
+		</isNotEmpty>
 		<isNotEmpty prepend="and" property="cdt.buildName" >
 			BUILD_NAME like #cdt.buildName:VARCHAR# 
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="cdt.buildNameEqual" >
-			BUILD_NAME = #cdt.buildNameEqual:VARCHAR#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="buildNames" >
-			BUILD_NAME in ($buildNames$)
 		</isNotEmpty>
 		<isNotEmpty prepend="and" property="cdt.productId" >
 			PRODUCT_ID = #cdt.productId:BIGINT#
@@ -115,6 +125,9 @@
 		<isNotEmpty prepend="and" property="cdt.respUrl" >
 			RESP_URL like #cdt.respUrl:VARCHAR# 
 		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.respBranch" >
+			RESP_BRANCH like #cdt.respBranch:VARCHAR# 
+		</isNotEmpty>
 		<isNotEmpty prepend="and" property="cdt.respUser" >
 			RESP_USER like #cdt.respUser:VARCHAR# 
 		</isNotEmpty>
@@ -160,18 +173,6 @@
 		<isNotEmpty prepend="and" property="cdt.endIsBuildImage" >
 			<![CDATA[ IS_BUILD_IMAGE <= #cdt.endIsBuildImage:INTEGER# ]]>
 		</isNotEmpty>
-		<isNotEmpty prepend="and" property="cdt.imageDefId" >
-			IMAGE_DEF_ID = #cdt.imageDefId:BIGINT#
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="imageDefIds" >
-			IMAGE_DEF_ID in ($imageDefIds$)
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="cdt.startImageDefId" >
-			<![CDATA[ IMAGE_DEF_ID >= #cdt.startImageDefId:BIGINT# ]]>
-		</isNotEmpty>
-		<isNotEmpty prepend="and" property="cdt.endImageDefId" >
-			<![CDATA[ IMAGE_DEF_ID <= #cdt.endImageDefId:BIGINT# ]]>
-		</isNotEmpty>
 		<isNotEmpty prepend="and" property="cdt.dockerFilePath" >
 			DOCKER_FILE_PATH like #cdt.dockerFilePath:VARCHAR# 
 		</isNotEmpty>
@@ -210,6 +211,30 @@
 		</isNotEmpty>
 		<isNotEmpty prepend="and" property="cdt.endResCenterId" >
 			<![CDATA[ RES_CENTER_ID <= #cdt.endResCenterId:BIGINT# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.openCache" >
+			OPEN_CACHE = #cdt.openCache:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="openCaches" >
+			OPEN_CACHE in ($openCaches$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startOpenCache" >
+			<![CDATA[ OPEN_CACHE >= #cdt.startOpenCache:INTEGER# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endOpenCache" >
+			<![CDATA[ OPEN_CACHE <= #cdt.endOpenCache:INTEGER# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.openEmail" >
+			OPEN_EMAIL = #cdt.openEmail:INTEGER#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="openEmails" >
+			OPEN_EMAIL in ($openEmails$)
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.startOpenEmail" >
+			<![CDATA[ OPEN_EMAIL >= #cdt.startOpenEmail:INTEGER# ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.endOpenEmail" >
+			<![CDATA[ OPEN_EMAIL <= #cdt.endOpenEmail:INTEGER# ]]>
 		</isNotEmpty>
 		<isNotEmpty prepend="and" property="cdt.dataStatus" >
 			DATA_STATUS = #cdt.dataStatus:INTEGER#
@@ -253,6 +278,15 @@
 		<isNotEmpty prepend="and" property="cdt.endModifyTime" >
 			<![CDATA[ MODIFY_TIME <= #cdt.endModifyTime:BIGINT# ]]>
 		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.depTag" >
+			DEP_TAG like #cdt.depTag:VARCHAR# 
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="cdt.depTagEqual" >
+			DEP_TAG = #cdt.depTagEqual:VARCHAR#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="depTags" >
+			DEP_TAG in ($depTags$)
+		</isNotEmpty>
 	</sql>
 	
 
@@ -262,6 +296,9 @@
 		</isNotNull>
 		<isNotNull prepend="," property="record.mntId"> 
 			MNT_ID = #record.mntId:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="record.imageDefId"> 
+			IMAGE_DEF_ID = #record.imageDefId:BIGINT#
 		</isNotNull>
 		<isNotNull prepend="," property="record.buildName"> 
 			BUILD_NAME = #record.buildName:VARCHAR#
@@ -281,6 +318,9 @@
 		<isNotNull prepend="," property="record.respUrl"> 
 			RESP_URL = #record.respUrl:VARCHAR#
 		</isNotNull>
+		<isNotNull prepend="," property="record.respBranch"> 
+			RESP_BRANCH = #record.respBranch:VARCHAR#
+		</isNotNull>
 		<isNotNull prepend="," property="record.respUser"> 
 			RESP_USER = #record.respUser:VARCHAR#
 		</isNotNull>
@@ -296,9 +336,6 @@
 		<isNotNull prepend="," property="record.isBuildImage"> 
 			IS_BUILD_IMAGE = #record.isBuildImage:INTEGER#
 		</isNotNull>
-		<isNotNull prepend="," property="record.imageDefId"> 
-			IMAGE_DEF_ID = #record.imageDefId:BIGINT#
-		</isNotNull>
 		<isNotNull prepend="," property="record.dockerFilePath"> 
 			DOCKER_FILE_PATH = #record.dockerFilePath:VARCHAR#
 		</isNotNull>
@@ -310,6 +347,12 @@
 		</isNotNull>
 		<isNotNull prepend="," property="record.resCenterId"> 
 			RES_CENTER_ID = #record.resCenterId:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="record.openCache"> 
+			OPEN_CACHE = #record.openCache:INTEGER#
+		</isNotNull>
+		<isNotNull prepend="," property="record.openEmail"> 
+			OPEN_EMAIL = #record.openEmail:INTEGER#
 		</isNotNull>
 		<isNotNull prepend="," property="record.dataStatus"> 
 			DATA_STATUS = #record.dataStatus:INTEGER#
@@ -326,14 +369,18 @@
 		<isNotNull prepend="," property="record.modifyTime"> 
 			MODIFY_TIME = #record.modifyTime:BIGINT#
 		</isNotNull>
+		<isNotNull prepend="," property="record.depTag"> 
+			DEP_TAG = #record.depTag:VARCHAR#
+		</isNotNull>
 	</sql>
 	
 
 	<sql id="sql_query_columns">
-		ID, MNT_ID, BUILD_NAME, PRODUCT_ID, PROJECT_ID, IS_EXTERNAL, 
-		RESP_TYPE, RESP_URL, RESP_USER, RESP_PWD, BUILD_CMD, IS_SUPPORT_HOOK, 
-		IS_BUILD_IMAGE, IMAGE_DEF_ID, DOCKER_FILE_PATH, IS_AUTO_PUSH_1, DATA_CENTER_ID, RES_CENTER_ID, 
-		DATA_STATUS, CREATOR, CREATE_TIME, MODIFIER, MODIFY_TIME
+		ID, MNT_ID, IMAGE_DEF_ID, BUILD_NAME, PRODUCT_ID, PROJECT_ID, 
+		IS_EXTERNAL, RESP_TYPE, RESP_URL, RESP_BRANCH, RESP_USER, RESP_PWD, 
+		BUILD_CMD, IS_SUPPORT_HOOK, IS_BUILD_IMAGE, DOCKER_FILE_PATH, IS_AUTO_PUSH_1, DATA_CENTER_ID, 
+		RES_CENTER_ID, OPEN_CACHE, OPEN_EMAIL, DATA_STATUS, CREATOR, CREATE_TIME, 
+		MODIFIER, MODIFY_TIME, DEP_TAG
 	</sql>
 	
 
@@ -371,17 +418,19 @@
 
 	<insert id="insert" parameterClass="java.util.Map">
 		insert into PC_BUILD_DEF(
-			ID, MNT_ID, BUILD_NAME, PRODUCT_ID, PROJECT_ID, 
-			IS_EXTERNAL, RESP_TYPE, RESP_URL, RESP_USER, RESP_PWD, 
-			BUILD_CMD, IS_SUPPORT_HOOK, IS_BUILD_IMAGE, IMAGE_DEF_ID, DOCKER_FILE_PATH, 
-			IS_AUTO_PUSH_1, DATA_CENTER_ID, RES_CENTER_ID, DATA_STATUS, CREATOR, 
-			CREATE_TIME, MODIFIER, MODIFY_TIME)
+			ID, MNT_ID, IMAGE_DEF_ID, BUILD_NAME, PRODUCT_ID, 
+			PROJECT_ID, IS_EXTERNAL, RESP_TYPE, RESP_URL, RESP_BRANCH, 
+			RESP_USER, RESP_PWD, BUILD_CMD, IS_SUPPORT_HOOK, IS_BUILD_IMAGE, 
+			DOCKER_FILE_PATH, IS_AUTO_PUSH_1, DATA_CENTER_ID, RES_CENTER_ID, OPEN_CACHE, 
+			OPEN_EMAIL, DATA_STATUS, CREATOR, CREATE_TIME, MODIFIER, 
+			MODIFY_TIME, DEP_TAG)
 		values (
-			#record.id:BIGINT#, #record.mntId:BIGINT#, #record.buildName:VARCHAR#, #record.productId:BIGINT#, #record.projectId:BIGINT#, 
-			#record.isExternal:INTEGER#, #record.respType:INTEGER#, #record.respUrl:VARCHAR#, #record.respUser:VARCHAR#, #record.respPwd:VARCHAR#, 
-			#record.buildCmd:VARCHAR#, #record.isSupportHook:INTEGER#, #record.isBuildImage:INTEGER#, #record.imageDefId:BIGINT#, #record.dockerFilePath:VARCHAR#, 
-			#record.isAutoPush1:INTEGER#, #record.dataCenterId:BIGINT#, #record.resCenterId:BIGINT#, #record.dataStatus:INTEGER#, #record.creator:VARCHAR#, 
-			#record.createTime:BIGINT#, #record.modifier:VARCHAR#, #record.modifyTime:BIGINT#)
+			#record.id:BIGINT#, #record.mntId:BIGINT#, #record.imageDefId:BIGINT#, #record.buildName:VARCHAR#, #record.productId:BIGINT#, 
+			#record.projectId:BIGINT#, #record.isExternal:INTEGER#, #record.respType:INTEGER#, #record.respUrl:VARCHAR#, #record.respBranch:VARCHAR#, 
+			#record.respUser:VARCHAR#, #record.respPwd:VARCHAR#, #record.buildCmd:VARCHAR#, #record.isSupportHook:INTEGER#, #record.isBuildImage:INTEGER#, 
+			#record.dockerFilePath:VARCHAR#, #record.isAutoPush1:INTEGER#, #record.dataCenterId:BIGINT#, #record.resCenterId:BIGINT#, #record.openCache:INTEGER#, 
+			#record.openEmail:INTEGER#, #record.dataStatus:INTEGER#, #record.creator:VARCHAR#, #record.createTime:BIGINT#, #record.modifier:VARCHAR#, 
+			#record.modifyTime:BIGINT#, #record.depTag:VARCHAR#)
 	</insert>
 	
 
