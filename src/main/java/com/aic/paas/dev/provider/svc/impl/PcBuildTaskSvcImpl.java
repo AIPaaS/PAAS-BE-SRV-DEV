@@ -77,7 +77,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		if(BinaryUtils.isEmpty(buildDefId)) {
 			return new ArrayList<PcBuildTask>();
 		}
-		//Integer[] statuss = {2,3};  // 1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
+		//Integer[] statuss = {2};  // 1=就绪    2=构建运行中   3=构建已中断     4=成功   5=失败
 		CPcBuildTask cdt = new CPcBuildTask();
 		cdt.setBuildDefId(buildDefId);
 		cdt.setStatuss(statuss);
