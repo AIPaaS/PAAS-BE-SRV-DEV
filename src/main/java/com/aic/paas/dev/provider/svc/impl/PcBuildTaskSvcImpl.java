@@ -1,8 +1,10 @@
 package com.aic.paas.dev.provider.svc.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.aic.paas.dev.provider.bean.PcBuildDef;
+import com.aic.paas.dev.provider.bean.CPcBuildTask;
 import com.aic.paas.dev.provider.bean.PcBuildTask;
 import com.aic.paas.dev.provider.db.PcBuildDefDao;
 import com.aic.paas.dev.provider.db.PcBuildTaskDao;
@@ -54,5 +56,12 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 //		record.setStatus(4);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
 		return buildTaskDao.save(record);
 	}
+	
+	@Override
+	public List<PcBuildTask> queryPcBuildTaskListForPage(Integer pageNum, Integer pageSize, CPcBuildTask cdt ,String orders) {
+		List<PcBuildTask> buPcBuildTasks=buildTaskDao.selectList(pageNum, pageSize, cdt, orders);
+		return buPcBuildTasks;
+	}
+	
 
 }
