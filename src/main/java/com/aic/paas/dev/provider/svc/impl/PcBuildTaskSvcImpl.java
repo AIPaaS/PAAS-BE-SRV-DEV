@@ -1,5 +1,6 @@
 package com.aic.paas.dev.provider.svc.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,26 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 	public List<PcBuildTask> queryPcBuildTaskListForPage(Integer pageNum, Integer pageSize, CPcBuildTask cdt ,String orders) {
 		List<PcBuildTask> buPcBuildTasks=buildTaskDao.selectList(pageNum, pageSize, cdt, orders);
 		return buPcBuildTasks;
+	}
+
+	
+	/**
+	 * aic.tsd_hyh  2016.03.11
+	 * 根据状态 buildId 去查 数据状态为2，3的List
+	 * @param buildDefId
+	 * * @param statuss
+	 * @return
+	 */
+	@Override
+	public List<PcBuildTask> selectTaskListByStatueId(Long buildDefId ,Integer[] statuss) {
+		if(BinaryUtils.isEmpty(buildDefId)) {
+			return new ArrayList<PcBuildTask>();
+		}
+		//Integer[] statuss = {2,3};  // 1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
+		CPcBuildTask cdt = new CPcBuildTask();
+		cdt.setBuildDefId(buildDefId);
+		cdt.setStatuss(statuss);
+		return buildTaskDao.selectList(cdt,null);
 	}
 	
 
