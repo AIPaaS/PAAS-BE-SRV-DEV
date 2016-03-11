@@ -83,6 +83,15 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		cdt.setStatuss(statuss);
 		return buildTaskDao.selectList(cdt,null);
 	}
+
+	@Override
+	public int updatePcBuildTaskCdt(PcBuildTask record, CPcBuildTask cdt) {
+		if(BinaryUtils.isEmpty(record) || BinaryUtils.isEmpty(cdt)) {
+			return 0;
+		}else{
+			return buildTaskDao.updateByCdt(record, cdt);
+		}
+	}
 	
 
 }
