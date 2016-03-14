@@ -25,8 +25,12 @@ import com.aic.paas.dev.provider.db.PcProductDao;
 import com.aic.paas.dev.provider.db.PcProjectDao;
 import com.aic.paas.dev.provider.svc.PcBuildSvc;
 import com.aic.paas.dev.provider.svc.bean.PcBuildDefInfo;
+import com.aic.paas.dev.provider.util.HttpClientUtil;
+import com.aic.paas.dev.provider.util.HttpRequestUtil;
 import com.binary.core.util.BinaryUtils;
+import com.binary.framework.exception.ServiceException;
 import com.binary.jdbc.Page;
+import com.binary.json.JSON;
 
 public class PcBuildSvcImpl implements PcBuildSvc {
 	
@@ -49,7 +53,6 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 	@Autowired
 	PcBuildTaskDao buildTaskDao;
 	
-	@SuppressWarnings("unused")
 	private String paasTaskUrl;
 
 	
@@ -249,8 +252,17 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 //				throw new ServiceException(" is exists build-name '"+name+"'! ");
 //			}
 		}
+		String param = JSON.toString(record);
+		String result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/buildMvc/post", param);
 		
-		return buildDefDao.save(record);
+		
+		
+		if(result!=null &&!"".equals(result)&&"000000".equals(result)){
+			return buildDefDao.save(record);
+		}else{
+			 throw new ServiceException("调接口失败! ");
+		}
+		
 	}
 	
 	
