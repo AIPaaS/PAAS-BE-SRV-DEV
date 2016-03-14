@@ -16,9 +16,7 @@ import com.aic.paas.dev.provider.db.PcBuildTaskDao;
 import com.aic.paas.dev.provider.db.PcImageDao;
 import com.aic.paas.dev.provider.db.PcImageDefDao;
 import com.aic.paas.dev.provider.svc.PcBuildTaskSvc;
-import com.aic.paas.dev.provider.util.HttpClientUtil;
 import com.binary.core.util.BinaryUtils;
-import com.binary.json.JSON;
 
 
 public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
