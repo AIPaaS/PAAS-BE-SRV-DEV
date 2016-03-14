@@ -16,6 +16,7 @@ import com.aic.paas.dev.provider.db.PcBuildTaskDao;
 import com.aic.paas.dev.provider.db.PcImageDao;
 import com.aic.paas.dev.provider.db.PcImageDefDao;
 import com.aic.paas.dev.provider.svc.PcBuildTaskSvc;
+import com.aic.paas.dev.provider.util.bean.PcBuildTaskRequest;
 import com.binary.core.util.BinaryUtils;
 
 
@@ -63,6 +64,8 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		String repo_name = buildName;
 		
 		String image_name =pid.getDirName()+"/"+pid.getImageName()+"/"+pid.getVersionNo();
+		
+		
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("namespace",mntCode );//对应租户mnt_code
 		param.put("repo_name",repo_name );//镜像构建项目的仓库名称（产品code/工程code/构建名）
