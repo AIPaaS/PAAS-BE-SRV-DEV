@@ -16,7 +16,9 @@ import com.aic.paas.dev.provider.db.PcBuildTaskDao;
 import com.aic.paas.dev.provider.db.PcImageDao;
 import com.aic.paas.dev.provider.db.PcImageDefDao;
 import com.aic.paas.dev.provider.svc.PcBuildTaskSvc;
+import com.aic.paas.dev.provider.util.HttpClientUtil;
 import com.binary.core.util.BinaryUtils;
+import com.binary.json.JSON;
 
 
 public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
@@ -32,6 +34,15 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 	
 	@Autowired
 	PcImageDao imageDao;
+	
+	private String paasTaskUrl;
+	
+	public void setPaasTaskUrl(String paasTaskUrl) {
+		if(paasTaskUrl != null) {
+			this.paasTaskUrl = paasTaskUrl.trim();
+		}
+	}
+	
 	
 	@Override
 	public Long saveBuildTask(PcBuildTask record,String mntCode) {
@@ -63,14 +74,16 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		param.put("callback_url", "http://xxxxxx/build");//启动时提供 ，停止不需要
 //		【构建】触发构建API接口开发post（消费方）---------------------------
 		
-		//此处调用task接口，获取 task中返回的参数result，后转化为map类型
-		
+//		String jParam = JSON.toString(param);
+//		String result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/buildTaskMvc/saveBuildTask", jParam);
 		Map<String, String> result = new HashMap<String, String>();
 		String namespace=mntCode;//result.get("namespace");		
 		String repo_name1=repo_name;//result.get("repo_name");
 		String build_id="2.0.0";//result.get("build_id");
 		String created_at="2016-3-12 09:53:07.792";//result.get("created_at");
 		String status="started";//result.get("status");//started ,error, queue
+		
+		//此处调用task接口，获取 task中返回的参数result，后转化为map类型
 		
 		String taskStartTime = created_at.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
 		record.setTaskStartTime(Long.parseLong(taskStartTime));
@@ -90,6 +103,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		buildTaskDao.save(record);
 		
 		return Long.parseLong(build_id) ;
+//		return Long.parseLong("1");
 				
 	}
 	
