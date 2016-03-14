@@ -108,6 +108,8 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 	}
 	
 	
+	
+	
 	@Override
 	public List<PcBuildTask> queryPcBuildTaskListForPage(Integer pageNum, Integer pageSize, CPcBuildTask cdt ,String orders) {
 		List<PcBuildTask> buPcBuildTasks=buildTaskDao.selectList(pageNum, pageSize, cdt, orders);
