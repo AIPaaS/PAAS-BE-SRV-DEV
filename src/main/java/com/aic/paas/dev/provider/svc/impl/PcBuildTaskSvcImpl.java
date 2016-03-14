@@ -16,8 +16,11 @@ import com.aic.paas.dev.provider.db.PcBuildTaskDao;
 import com.aic.paas.dev.provider.db.PcImageDao;
 import com.aic.paas.dev.provider.db.PcImageDefDao;
 import com.aic.paas.dev.provider.svc.PcBuildTaskSvc;
+import com.aic.paas.dev.provider.util.HttpClientUtil;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskRequest;
+import com.aic.paas.dev.provider.util.bean.PcBuildTaskResponse;
 import com.binary.core.util.BinaryUtils;
+import com.binary.json.JSON;
 
 
 public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
@@ -65,24 +68,26 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		
 		String image_name =pid.getDirName()+"/"+pid.getImageName()+"/"+pid.getVersionNo();
 		
+		PcBuildTaskRequest pbtr = new PcBuildTaskRequest();
+		pbtr.setNamespace(mntCode);
+		pbtr.setRepo_name(repo_name);
+		pbtr.setImage_name(image_name);
+		pbtr.setTag(depTag);
+		pbtr.setCallback_url("");
 		
-		Map<String, String> param = new HashMap<String, String>();
-		param.put("namespace",mntCode );//对应租户mnt_code
-		param.put("repo_name",repo_name );//镜像构建项目的仓库名称（产品code/工程code/构建名）
-		param.put("image_name", image_name);//镜像名（对应目录 + 镜像名+ 版本号）
-		param.put("opt", "start");//start启动， stop 停止
-		param.put("tag", depTag);
-		param.put("callback_url", "http://xxxxxx/build");//启动时提供 ，停止不需要
 //		【构建】触发构建API接口开发post（消费方）---------------------------
 		
-//		String jParam = JSON.toString(param);
-//		String result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/buildTaskMvc/saveBuildTask", jParam);
-		Map<String, String> result = new HashMap<String, String>();
-		String namespace=mntCode;//result.get("namespace");		
-		String repo_name1=repo_name;//result.get("repo_name");
-		String build_id="2.0.0";//result.get("build_id");
-		String created_at="2016-3-12 09:53:07.792";//result.get("created_at");
-		String status="started";//result.get("status");//started ,error, queue
+		String jsonpbtr = JSON.toString(pbtr);
+		String result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/buildTaskMvc/saveBuildTask", jsonpbtr);
+		
+		PcBuildTaskResponse pbtre = new PcBuildTaskResponse();
+		pbtre = JSON.toObject(result, PcBuildTaskResponse.class);
+		
+		String namespace=pbtre.getNamespace();	
+		String repo_name1 = pbtre.getRepo_name();
+		String build_id=pbtre.getBuild_id();
+		String created_at=pbtre.getCreated_at();
+		String status=pbtre.getStatus();
 		
 		//此处调用task接口，获取 task中返回的参数result，后转化为map类型
 		
@@ -104,7 +109,6 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		buildTaskDao.save(record);
 		
 		return Long.parseLong(build_id) ;
-//		return Long.parseLong("1");
 				
 	}
 	
