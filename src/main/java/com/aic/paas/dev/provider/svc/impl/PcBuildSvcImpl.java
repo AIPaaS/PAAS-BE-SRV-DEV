@@ -49,7 +49,16 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 	@Autowired
 	PcBuildTaskDao buildTaskDao;
 	
+	@SuppressWarnings("unused")
+	private String paasTaskUrl;
 
+	
+	
+	public void setPaasTaskUrl(String paasTaskUrl) {
+		if(paasTaskUrl != null) {
+			this.paasTaskUrl = paasTaskUrl.trim();
+		}
+	}
 	
 	@Override
 	public Page<PcBuildDef> queryDefPage(Integer pageNum, Integer pageSize, CPcBuildDef cdt, String orders) {
