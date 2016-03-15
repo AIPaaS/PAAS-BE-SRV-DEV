@@ -1,15 +1,15 @@
 package com.aic.paas.dev.provider.svc.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.aic.paas.dev.provider.bean.CPcBuildDef;
 import com.aic.paas.dev.provider.bean.CPcBuildTask;
 import com.aic.paas.dev.provider.bean.PcBuildDef;
 import com.aic.paas.dev.provider.bean.PcBuildTask;
+import com.aic.paas.dev.provider.bean.PcImage;
 import com.aic.paas.dev.provider.bean.PcImageDef;
 import com.aic.paas.dev.provider.db.PcBuildDefDao;
 import com.aic.paas.dev.provider.db.PcBuildTaskDao;
@@ -17,9 +17,11 @@ import com.aic.paas.dev.provider.db.PcImageDao;
 import com.aic.paas.dev.provider.db.PcImageDefDao;
 import com.aic.paas.dev.provider.svc.PcBuildTaskSvc;
 import com.aic.paas.dev.provider.util.HttpClientUtil;
+import com.aic.paas.dev.provider.util.bean.PcBuildTaskCallBack;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskRequest;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskResponse;
 import com.binary.core.util.BinaryUtils;
+import com.binary.framework.exception.ServiceException;
 import com.binary.json.JSON;
 
 
@@ -148,6 +150,96 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		}else{
 			return buildTaskDao.updateByCdt(record, cdt);
 		}
+	}
+
+
+	@Override
+	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc) {
+		String mntId = pbtc.getMnt_id();
+		String buildName = pbtc.getRepo_name();
+		String depTag =pbtc.getTag();
+		String build_id = pbtc.getBuild_id();
+		String runStartTime = pbtc.getDuration();
+		String taskEndTime =pbtc.getTime();
+		String status =pbtc.getStatus();
+		
+		//1.根据租户code namespace[mnt_code]，获取租户id mnt_id []
+		
+		//2.根据租户id [MNT_ID]和repo_name[BUILD_NAME]和tag[DEP_TAG]获取一条 部署定义记录
+		CPcBuildDef cbd = new CPcBuildDef();
+		cbd.setMntId(Long.parseLong(mntId));
+		cbd.setBuildName(buildName);
+		
+		cbd.setDepTagEqual(depTag);
+		cbd.setDataStatus(1);
+		List<PcBuildDef> cbdlist = buildDefDao.selectList(cbd, null);
+		PcBuildDef pbd = new PcBuildDef();
+		if(cbdlist!=null && cbdlist.size()>0){
+			pbd =cbdlist.get(0);
+		}
+		//3.根据部署定义的id[BUILD_DEF_ID] 和tag[DEP_TAG]和 返回的buildId[BACK_BUILD_ID]，获取部署任务记录
+		
+		CPcBuildTask cbt = new CPcBuildTask();		
+		if(pbd.getDepTag() != null)cbt.setDepTag(pbd.getDepTag());
+		if(build_id!=null)cbt.setBackBuildIdEqual(build_id);
+		if(pbd.getId()!=null)cbt.setBuildDefId(pbd.getId());
+		cbt.setStatus(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
+		List<PcBuildTask> pbtlist = buildTaskDao.selectList(cbt, "ID");
+				
+		if(pbtlist == null || pbtlist.size() <= 0){
+			 throw new ServiceException("未查询到该构建任务！ ");
+		}
+		
+		PcBuildTask record = new PcBuildTask();
+		record.setRunStartTime(Long.parseLong(runStartTime));//实际运行时间
+
+//		Long ltaskEndTime = BinaryUtils.getNumberDateTime(Convert.ToDateTime(taskEndTime));
+//		record.setTaskEndTime(taskEndTime);//任务结束时间
+		
+		if("success".equals(status)){
+			record.setStatus(4);    //1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
+			record.setFinishType(1);//1=正常结束    2=人为中断
+		}
+		if("error".equals(status)){
+			record.setStatus(5);
+			record.setFinishType(1);
+		}
+		//4.更新构建任务表PC_BUILD_TASK
+		Integer uppdateBuildTaskResult =buildTaskDao.updateByCdt(record, cbt);
+		if(uppdateBuildTaskResult < 1 ){
+			 throw new ServiceException("未查询到该构建任务记录！ ");
+		}
+		//根据构建任务表PC_BUILD_TASK的[所属镜像定义id  IMAGE_DEF_ID]，查询唯一一条镜像定义表[PC_IMAGE_DEF]记录
+		Long imageDefId = pbd.getImageDefId();//获取镜像定义Id
+		PcImageDef pid = imageDefDao.selectById(imageDefId);
+		
+		//5.插入一条镜像表[PC_IMAGE]记录
+		PcImage pi = new PcImage();
+		if(pbd.getId()!=null)pi.setDefId(pbd.getId());//所属定义
+		if(pbd.getMntId()!=null)pi.setMntId(pbd.getMntId());//所属租户
+//		pi.setImgRespId(imgRespId);//所属镜像库,调用 资源管理模块中镜像库表[PC_IMAGE_REPOSITORY]中ID---------------------
+		if(pid.getDirName()!=null)pi.setDirName(pid.getDirName());//目录名
+		if(pid.getImageName()!=null)pi.setImageName(pid.getImageName());//镜像名
+		if(pid.getImageFullName()!=null)pi.setImageFullName(pid.getImageFullName());//镜像全名
+		if(pbd.getIsExternal()!=null)pi.setIsExternal(pbd.getIsExternal());//是否外部镜像
+		if(pbd.getProductId()!=null)pi.setProductId(pbd.getProductId());
+		if(pbd.getProjectId()!=null)pi.setProjectId(pbd.getProjectId());
+		if(pbtlist.get(0).getId()!=null)pi.setBuildNo(pbtlist.get(0).getId().toString());//build号
+		if(pbtlist.get(0).getRunStartTime()!=null)pi.setBuildTime(pbtlist.get(0).getRunStartTime());//构建时间
+		if(pbtlist.get(0).getTaskUserId()!=null)pi.setBuildUser(pbtlist.get(0).getTaskUserId().toString());
+//		pi.setStatus(status);//1=快照  2=开发  3=测试  4=生产------------------------------
+		if(pbd.getDataCenterId()!=null)pi.setDataCenterId(pbd.getDataCenterId());//发布数据中心
+		if(pbd.getResCenterId()!=null)pi.setResCenterId(pbd.getResCenterId());//发布资源中心
+		pi.setDataStatus(1);//数据状态：1-正常 0-删除
+		if(pbtlist.get(0).getDepTag()!=null)pi.setDepTag(pbtlist.get(0).getDepTag());
+		if(pbtlist.get(0).getBackBuildId()!=null)pi.setBackBuildId(pbtlist.get(0).getBackBuildId());
+		Long insertImageResult = Long.parseLong("0");
+		String flag ="false";
+		insertImageResult = imageDao.insert(pi);
+		if(insertImageResult >=1){
+			flag = "success";
+		}
+		return flag;
 	}
 	
 
