@@ -118,7 +118,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 			record.setStatus(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
 		}
 		if("queue".equals(status)){
-			record.setStatus(3);
+			throw new ServiceException("构建资源已满，请稍后再试！ ");
 		}
 		if("error".equals(status)){
 			record.setStatus(5);
