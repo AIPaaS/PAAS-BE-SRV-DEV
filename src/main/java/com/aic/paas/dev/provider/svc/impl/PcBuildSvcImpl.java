@@ -26,6 +26,7 @@ import com.aic.paas.dev.provider.db.PcProjectDao;
 import com.aic.paas.dev.provider.svc.PcBuildSvc;
 import com.aic.paas.dev.provider.svc.bean.PcBuildDefInfo;
 import com.aic.paas.dev.provider.util.HttpClientUtil;
+import com.aic.paas.dev.provider.util.bean.PcBuildTaskCallBack;
 import com.binary.core.util.BinaryUtils;
 import com.binary.framework.exception.ServiceException;
 import com.binary.jdbc.Page;
@@ -61,6 +62,7 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 			this.paasTaskUrl = paasTaskUrl.trim();
 		}
 	}
+
 	
 	@Override
 	public Page<PcBuildDef> queryDefPage(Integer pageNum, Integer pageSize, CPcBuildDef cdt, String orders) {
@@ -287,15 +289,37 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 	}
 	
 	
+	@Override
+	public String queryCompRoomIdByCallBack(PcBuildTaskCallBack pbtc) {
+		//所属机房
+		String mntId = pbtc.getMnt_id();
+		String buildName = pbtc.getRepo_name();
+		String depTag =pbtc.getTag();
+		
+		//2.根据租户id [MNT_ID]和repo_name[BUILD_NAME]和tag[DEP_TAG]获取一条 部署定义记录
+		CPcBuildDef cbd = new CPcBuildDef();
+		cbd.setMntId(Long.parseLong(mntId));
+		cbd.setBuildName(buildName);
+		
+		cbd.setDepTagEqual(depTag);
+		cbd.setDataStatus(1);
+		List<PcBuildDef> cbdlist = buildDefDao.selectList(cbd, null);
+		PcBuildDef pbd = new PcBuildDef();
+		
+		String compRoomId = "";
+		
+		if(cbdlist!=null && cbdlist.size()>0){
+			pbd =cbdlist.get(0);
+			if(pbd.getProductId()!=null){
+				PcProduct pp = new PcProduct();
+				pp = productDao.selectById(pbd.getProductId());
+				if(pp.getCompRoomId()!=null)compRoomId = pp.getCompRoomId().toString();
+			}
+			
+		}
+		return compRoomId;
+	}
 
-
-	
-	
-	
-	
-	
-	
-	
 	
 }
 

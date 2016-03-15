@@ -52,7 +52,8 @@ public interface PcBuildTaskSvc {
 	/**
 	 * 不分页查询
 	 * @param pbtc : 构建任务回调对象
+	 * @param imgRespId : 所属镜像库Id
 	 * @return 
 	 */
-	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc);
+	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespId);
 }

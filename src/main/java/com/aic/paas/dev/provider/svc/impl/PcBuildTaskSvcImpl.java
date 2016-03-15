@@ -20,6 +20,7 @@ import com.aic.paas.dev.provider.util.HttpClientUtil;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskCallBack;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskRequest;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskResponse;
+import com.binary.core.lang.DateUtils;
 import com.binary.core.util.BinaryUtils;
 import com.binary.framework.exception.ServiceException;
 import com.binary.json.JSON;
@@ -46,13 +47,27 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 			this.paasTaskUrl = paasTaskUrl.trim();
 		}
 	}
-	
+	private String paasDevUrl;
+	public void setPaasDevUrl(String paasDevUrl) {
+		if(paasDevUrl != null) {
+			this.paasDevUrl = paasDevUrl.trim();
+		}
+	}
 	
 	@Override
 	public Long saveBuildTask(PcBuildTask record,String mntCode) {
 		
 		BinaryUtils.checkEmpty(record, "record");
 		BinaryUtils.checkEmpty(mntCode, "mntCode");
+		
+		CPcBuildTask cbt = new CPcBuildTask();
+		cbt.setBackBuildIdEqual(record.getBuildDefId().toString());
+		cbt.setDataStatus(1);
+		cbt.setStatus(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
+		List<PcBuildTask> pbtlist =buildTaskDao.selectList(cbt, "ID");
+		if(pbtlist!=null && pbtlist.size()>0){
+			 throw new ServiceException("正在构建中，请稍后再试！ ");
+		}
 		
 		//根据构建定义id，查询构建定义对象
 		PcBuildDef pbd = buildDefDao.selectById(record.getBuildDefId());
@@ -75,7 +90,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		pbtr.setRepo_name(repo_name);
 		pbtr.setImage_name(image_name);
 		pbtr.setTag(depTag);
-		pbtr.setCallback_url("");
+		pbtr.setCallback_url(paasDevUrl+"/dev/buildTaskMvc/updateBuildTaskByCallBack");
 		
 //		【构建】触发构建API接口开发post（消费方）---------------------------
 		
@@ -93,7 +108,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		
 		//此处调用task接口，获取 task中返回的参数result，后转化为map类型
 		
-		String taskStartTime = created_at.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
+		String taskStartTime = created_at.replace("-", "").replace(":", "").replace(".", "").replace(" ", "").substring(0, 16);
 		record.setTaskStartTime(Long.parseLong(taskStartTime));
 		record.setBackBuildId(build_id);
 		
@@ -152,18 +167,14 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		}
 	}
 
-
-	@Override
-	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc) {
+	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespId) {
 		String mntId = pbtc.getMnt_id();
 		String buildName = pbtc.getRepo_name();
 		String depTag =pbtc.getTag();
-		String build_id = pbtc.getBuild_id();
+		String backBuildId = pbtc.getBuild_id();
 		String runStartTime = pbtc.getDuration();
 		String taskEndTime =pbtc.getTime();
 		String status =pbtc.getStatus();
-		
-		//1.根据租户code namespace[mnt_code]，获取租户id mnt_id []
 		
 		//2.根据租户id [MNT_ID]和repo_name[BUILD_NAME]和tag[DEP_TAG]获取一条 部署定义记录
 		CPcBuildDef cbd = new CPcBuildDef();
@@ -180,34 +191,40 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		//3.根据部署定义的id[BUILD_DEF_ID] 和tag[DEP_TAG]和 返回的buildId[BACK_BUILD_ID]，获取部署任务记录
 		
 		CPcBuildTask cbt = new CPcBuildTask();		
+		CPcBuildTask cbtl = new CPcBuildTask();		
 		if(pbd.getDepTag() != null)cbt.setDepTag(pbd.getDepTag());
-		if(build_id!=null)cbt.setBackBuildIdEqual(build_id);
+		if(backBuildId!=null)cbt.setBackBuildIdEqual(backBuildId);
 		if(pbd.getId()!=null)cbt.setBuildDefId(pbd.getId());
 		cbt.setStatus(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
-		List<PcBuildTask> pbtlist = buildTaskDao.selectList(cbt, "ID");
-				
-		if(pbtlist == null || pbtlist.size() <= 0){
-			 throw new ServiceException("未查询到该构建任务！ ");
-		}
 		
 		PcBuildTask record = new PcBuildTask();
 		record.setRunStartTime(Long.parseLong(runStartTime));//实际运行时间
 
-//		Long ltaskEndTime = BinaryUtils.getNumberDateTime(Convert.ToDateTime(taskEndTime));
-//		record.setTaskEndTime(taskEndTime);//任务结束时间
 		
+		String ltaskEndTime = taskEndTime.replace("-", "").replace(":", "").replace(".", "").replace(" ", "").substring(0, 16);
+		record.setTaskEndTime(Long.parseLong(ltaskEndTime));//任务结束时间
 		if("success".equals(status)){
 			record.setStatus(4);    //1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
 			record.setFinishType(1);//1=正常结束    2=人为中断
+			cbtl.setStatus(4);
 		}
 		if("error".equals(status)){
 			record.setStatus(5);
 			record.setFinishType(1);
+			cbtl.setStatus(5);
 		}
 		//4.更新构建任务表PC_BUILD_TASK
 		Integer uppdateBuildTaskResult =buildTaskDao.updateByCdt(record, cbt);
-		if(uppdateBuildTaskResult < 1 ){
-			 throw new ServiceException("未查询到该构建任务记录！ ");
+		
+		
+		if(pbd.getDepTag() != null)cbtl.setDepTag(pbd.getDepTag());
+		if(backBuildId!=null)cbtl.setBackBuildIdEqual(backBuildId);
+		if(pbd.getId()!=null)cbtl.setBuildDefId(pbd.getId());
+
+		List<PcBuildTask> pbtlist = buildTaskDao.selectList(cbtl, "ID");
+		
+		if(pbtlist == null || pbtlist.size() <= 0){
+			 throw new ServiceException("未查询到该构建任务！ ");
 		}
 		//根据构建任务表PC_BUILD_TASK的[所属镜像定义id  IMAGE_DEF_ID]，查询唯一一条镜像定义表[PC_IMAGE_DEF]记录
 		Long imageDefId = pbd.getImageDefId();//获取镜像定义Id
@@ -217,7 +234,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		PcImage pi = new PcImage();
 		if(pbd.getId()!=null)pi.setDefId(pbd.getId());//所属定义
 		if(pbd.getMntId()!=null)pi.setMntId(pbd.getMntId());//所属租户
-//		pi.setImgRespId(imgRespId);//所属镜像库,调用 资源管理模块中镜像库表[PC_IMAGE_REPOSITORY]中ID---------------------
+		if(imgRespId!="")pi.setImgRespId(Long.parseLong(imgRespId));//所属镜像库,调用 资源管理模块中镜像库表[PC_IMAGE_REPOSITORY]中ID---------------------
 		if(pid.getDirName()!=null)pi.setDirName(pid.getDirName());//目录名
 		if(pid.getImageName()!=null)pi.setImageName(pid.getImageName());//镜像名
 		if(pid.getImageFullName()!=null)pi.setImageFullName(pid.getImageFullName());//镜像全名
@@ -227,9 +244,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		if(pbtlist.get(0).getId()!=null)pi.setBuildNo(pbtlist.get(0).getId().toString());//build号
 		if(pbtlist.get(0).getRunStartTime()!=null)pi.setBuildTime(pbtlist.get(0).getRunStartTime());//构建时间
 		if(pbtlist.get(0).getTaskUserId()!=null)pi.setBuildUser(pbtlist.get(0).getTaskUserId().toString());
-//		pi.setStatus(status);//1=快照  2=开发  3=测试  4=生产------------------------------
-		if(pbd.getDataCenterId()!=null)pi.setDataCenterId(pbd.getDataCenterId());//发布数据中心
-		if(pbd.getResCenterId()!=null)pi.setResCenterId(pbd.getResCenterId());//发布资源中心
+		pi.setStatus(1);//1=快照  2=开发  3=测试  4=生产------------------------------
 		pi.setDataStatus(1);//数据状态：1-正常 0-删除
 		if(pbtlist.get(0).getDepTag()!=null)pi.setDepTag(pbtlist.get(0).getDepTag());
 		if(pbtlist.get(0).getBackBuildId()!=null)pi.setBackBuildId(pbtlist.get(0).getBackBuildId());

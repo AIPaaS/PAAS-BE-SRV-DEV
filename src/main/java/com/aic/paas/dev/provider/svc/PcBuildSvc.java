@@ -5,6 +5,7 @@ import java.util.List;
 import com.aic.paas.dev.provider.bean.CPcBuildDef;
 import com.aic.paas.dev.provider.bean.PcBuildDef;
 import com.aic.paas.dev.provider.svc.bean.PcBuildDefInfo;
+import com.aic.paas.dev.provider.util.bean.PcBuildTaskCallBack;
 import com.binary.jdbc.Page;
 
 public interface PcBuildSvc {
@@ -110,5 +111,10 @@ public interface PcBuildSvc {
 	 */
 	public int checkBuildFullName(PcBuildDef record);
 	
-
+	/**
+	 * 根据回调函数，查询所属机房的Id
+	 * @param pbtc 构建任务的回调对象
+	 * @return 该构建任务所属的构建定义的产品的所属机房的Id
+	 */
+	public String queryCompRoomIdByCallBack(PcBuildTaskCallBack pbtc);
 }
