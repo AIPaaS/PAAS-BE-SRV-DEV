@@ -242,18 +242,57 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 			if(record.getDockerFilePath() != null) BinaryUtils.checkEmpty(record.getDockerFilePath(), "record.dockerFilePath");
 		}
 		
-//		Long id = record.getId();
 		if(record.getBuildName() != null) {
 			String name = record.getBuildName().trim();
 			record.setBuildName(name);
 		}
-		String param = JSON.toString(record);
-		String result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/buildDefMvc/buildDefApi", param);
+		Map<String,Object> paramMap = new HashMap<String,Object>();
+		Map<String,Object> buildConfigMap = new HashMap<String,Object>();
+		Map<String,Object> tagConfigsMap = new HashMap<String,Object>();
+		PcImageDef pcImageDef = imageDefDao.selectById(record.getImageDefId());
 		
-		if(result!=null &&!"".equals(result)&&"000000".equals(result)){
+		if(pcImageDef != null){
+			tagConfigsMap.put("code_repo_type", "branch");
+			tagConfigsMap.put("code_repo_type_value", "master");
+			tagConfigsMap.put("docker_repo_tag", record.getDepTag());
+			tagConfigsMap.put("dockerfile_location", record.getDockerFilePath());
+			tagConfigsMap.put("is_active", "true");
+			if(record.getOpenCache()!=null&&record.getOpenCache()==1){
+				tagConfigsMap.put("build_cache_enabled","true");
+			}else{
+				tagConfigsMap.put("build_cache_enabled","false");
+			}
+			
+			buildConfigMap.put("tag_configs", tagConfigsMap);
+			buildConfigMap.put("code_repo_client", "Gitlab");
+			buildConfigMap.put("code_repo_clone_url",record.getRespUrl());
+			
+			paramMap.put("namespace", record.getMntId().toString());
+			paramMap.put("repo_name", record.getBuildName().substring(1));
+			paramMap.put("image_name", pcImageDef.getImageFullName().substring(1));
+			paramMap.put("description", pcImageDef.getImageFullName().substring(1));
+			paramMap.put("is_public", "false");
+			if(record.getOpenEmail()==1){
+				paramMap.put("email_enabled", "true");
+			}else{
+				paramMap.put("email_enabled", "false");
+			}
+			paramMap.put("email", "");
+			paramMap.put("build_config", buildConfigMap);
+			
+			
+		}
+		String result=null;
+		String param = JSON.toString(paramMap);
+		if(record.getId()!=null){
+			result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/buildDefMvc/updateBuildDefApi", param);
+		}else{
+			result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/buildDefMvc/buildDefApi", param);
+		}
+		if(result!=null &&!"".equals(result)&&"success".equals(result)){
 			return buildDefDao.save(record);
 		}else{
-			 throw new ServiceException("调用接口失败! ");
+			 throw new ServiceException("调用构建定义接口失败! ");
 		}
 		
 	}
