@@ -99,18 +99,11 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		
 		PcBuildTaskResponse pbtre = new PcBuildTaskResponse();
 		pbtre = JSON.toObject(result, PcBuildTaskResponse.class);
-		
-		String namespace=pbtre.getNamespace();	
-		String repo_name1 = pbtre.getRepo_name();
-		String build_id=pbtre.getBuild_id();
-		String created_at=pbtre.getCreated_at();
+		String build_id = "";
+		String created_at = "";
+		if(pbtre.getBuild_id()!=null) build_id=pbtre.getBuild_id();
+		if(pbtre.getCreated_at()!=null) created_at=pbtre.getCreated_at();
 		String status=pbtre.getStatus();
-		
-		//此处调用task接口，获取 task中返回的参数result，后转化为map类型
-		
-		String taskStartTime = created_at.replace("-", "").replace(":", "").replace(".", "").replace(" ", "").substring(0, 16);
-		record.setTaskStartTime(Long.parseLong(taskStartTime));
-		record.setBackBuildId(build_id);
 		
 		//根据 所属构建定义[BUILD_DEF_ID]，查询构建定义记录
 		
@@ -123,8 +116,24 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		if("error".equals(status)){
 			record.setStatus(5);
 		}
-		buildTaskDao.save(record);
 		
+		String taskStartTime = created_at.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
+		String subTaskStartTime = "";
+		if(taskStartTime!=""){
+			if(taskStartTime.length()>16){
+				subTaskStartTime = taskStartTime.substring(0, 16);
+			}else{
+				subTaskStartTime = taskStartTime;
+			}
+			record.setTaskStartTime(Long.parseLong(taskStartTime));
+		}
+		
+		record.setBackBuildId(build_id);
+		
+		buildTaskDao.save(record);
+		if("".equals(build_id)){
+			throw new ServiceException("构建失败，请稍后再试！ ");
+		}
 		return Long.parseLong(build_id) ;
 				
 	}
