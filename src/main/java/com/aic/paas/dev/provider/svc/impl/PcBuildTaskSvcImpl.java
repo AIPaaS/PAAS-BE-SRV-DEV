@@ -55,10 +55,10 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 	}
 	
 	@Override
-	public Long saveBuildTask(PcBuildTask record,String mntCode) {
+	public Long saveBuildTask(PcBuildTask record,String namespace) {
 		
 		BinaryUtils.checkEmpty(record, "record");
-		BinaryUtils.checkEmpty(mntCode, "mntCode");
+		BinaryUtils.checkEmpty(namespace, "namespace");
 		
 		CPcBuildTask cbt = new CPcBuildTask();
 		cbt.setBackBuildIdEqual(record.getBuildDefId().toString());
@@ -82,13 +82,13 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		record.setDataStatus(1);
 		String buildName = pbd.getBuildName();
 		String repo_name = buildName;
-		
-		String image_name =pid.getDirName()+"/"+pid.getImageName()+"/"+pid.getVersionNo();
+		String image_name = "";
+		if(pid!=null) image_name =pid.getDirName()+"/"+pid.getImageName()+"/"+pid.getVersionNo();
 		
 		PcBuildTaskRequest pbtr = new PcBuildTaskRequest();
-		pbtr.setNamespace(mntCode);
-		pbtr.setRepo_name(repo_name);
-		pbtr.setImage_name(image_name);
+		pbtr.setNamespace(namespace);
+		pbtr.setRepo_name(repo_name.substring(1).trim());
+		pbtr.setImage_name(image_name.substring(1).trim());
 		pbtr.setTag(depTag);
 		pbtr.setCallback_url(paasDevUrl+"/dev/buildTaskMvc/updateBuildTaskByCallBack");
 		
