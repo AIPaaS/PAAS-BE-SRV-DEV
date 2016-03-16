@@ -258,7 +258,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		if(pbtlist.get(0).getDepTag()!=null)pi.setDepTag(pbtlist.get(0).getDepTag());
 		if(pbtlist.get(0).getBackBuildId()!=null)pi.setBackBuildId(pbtlist.get(0).getBackBuildId());
 		Long insertImageResult = Long.parseLong("0");
-		String flag ="false";
+		String flag ="error";
 		insertImageResult = imageDao.insert(pi);
 		if(insertImageResult >=1){
 			flag = "success";
