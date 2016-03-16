@@ -267,7 +267,7 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 			buildConfigMap.put("code_repo_client", "Gitlab");
 			buildConfigMap.put("code_repo_clone_url",record.getRespUrl().trim());
 			
-			paramMap.put("namespace", mntCode+"+"+userCode);
+			paramMap.put("namespace", mntCode+"_____"+userCode);
 			paramMap.put("repo_name", record.getBuildName().substring(1).trim());
 			paramMap.put("image_name", pcImageDef.getImageFullName().substring(1).trim());
 			paramMap.put("description", pcImageDef.getImageFullName().substring(1).trim());
