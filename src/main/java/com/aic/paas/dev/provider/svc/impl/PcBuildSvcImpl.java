@@ -208,7 +208,7 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 	
 	
 	@Override
-	public Long saveOrUpdateDef(PcBuildDef record) {
+	public Long saveOrUpdateDef(PcBuildDef record,String userCode,String mntCode) {
 		BinaryUtils.checkEmpty(record, "record");
 		BinaryUtils.checkEmpty(record.getMntId(), "record.mntId");
 		
@@ -255,7 +255,7 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 			tagConfigsMap.put("code_repo_type", "branch");
 			tagConfigsMap.put("code_repo_type_value", "master");
 			tagConfigsMap.put("docker_repo_tag", record.getDepTag());
-			tagConfigsMap.put("dockerfile_location", record.getDockerFilePath());
+			tagConfigsMap.put("dockerfile_location", record.getDockerFilePath().trim());
 			tagConfigsMap.put("is_active", "true");
 			if(record.getOpenCache()!=null&&record.getOpenCache()==1){
 				tagConfigsMap.put("build_cache_enabled","true");
@@ -265,12 +265,12 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 			
 			buildConfigMap.put("tag_configs", tagConfigsMap);
 			buildConfigMap.put("code_repo_client", "Gitlab");
-			buildConfigMap.put("code_repo_clone_url",record.getRespUrl());
+			buildConfigMap.put("code_repo_clone_url",record.getRespUrl().trim());
 			
-			paramMap.put("namespace", record.getMntId().toString());
-			paramMap.put("repo_name", record.getBuildName().substring(1));
-			paramMap.put("image_name", pcImageDef.getImageFullName().substring(1));
-			paramMap.put("description", pcImageDef.getImageFullName().substring(1));
+			paramMap.put("namespace", mntCode+"+"+userCode);
+			paramMap.put("repo_name", record.getBuildName().substring(1).trim());
+			paramMap.put("image_name", pcImageDef.getImageFullName().substring(1).trim());
+			paramMap.put("description", pcImageDef.getImageFullName().substring(1).trim());
 			paramMap.put("is_public", "false");
 			if(record.getOpenEmail()==1){
 				paramMap.put("email_enabled", "true");
@@ -279,7 +279,6 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 			}
 			paramMap.put("email", "");
 			paramMap.put("build_config", buildConfigMap);
-			
 			
 		}
 		String result=null;

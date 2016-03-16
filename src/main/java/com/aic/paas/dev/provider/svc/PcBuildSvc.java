@@ -92,7 +92,7 @@ public interface PcBuildSvc {
 	 * @param record : PcBuildDef数据记录
 	 * @return 当前记录主键[id]值
 	 */
-	public Long saveOrUpdateDef(PcBuildDef record);
+	public Long saveOrUpdateDef(PcBuildDef record,String userCode,String mntCode);
 	
 	
 	
