@@ -111,6 +111,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 			record.setStatus(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
 		}
 		if("queue".equals(status)){
+			record.setStatus(5);
 			throw new ServiceException("构建资源已满，请稍后再试！ ");
 		}
 		if("error".equals(status)){
@@ -211,7 +212,16 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 
 		
 		String ltaskEndTime = taskEndTime.replace("-", "").replace(":", "").replace(".", "").replace(" ", "").substring(0, 16);
-		record.setTaskEndTime(Long.parseLong(ltaskEndTime));//任务结束时间
+		String subTaskEndTime = "";
+		if(taskEndTime!=""){
+			if(taskEndTime.length()>16){
+				subTaskEndTime = taskEndTime.substring(0, 16);
+			}else{
+				subTaskEndTime = taskEndTime;
+			}
+			record.setTaskEndTime(Long.parseLong(taskEndTime));//任务结束时间
+		}
+		
 		if("success".equals(status)){
 			record.setStatus(4);    //1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
 			record.setFinishType(1);//1=正常结束    2=人为中断
@@ -225,7 +235,9 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		//4.更新构建任务表PC_BUILD_TASK
 		Integer uppdateBuildTaskResult =buildTaskDao.updateByCdt(record, cbt);
 		
-		
+		if("error".equals(status)){
+			return  "success";
+		}
 		if(pbd.getDepTag() != null)cbtl.setDepTag(pbd.getDepTag());
 		if(backBuildId!=null)cbtl.setBackBuildIdEqual(backBuildId);
 		if(pbd.getId()!=null)cbtl.setBuildDefId(pbd.getId());
