@@ -126,7 +126,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 			}else{
 				subTaskStartTime = taskStartTime;
 			}
-			record.setTaskStartTime(Long.parseLong(taskStartTime));
+			record.setTaskStartTime(Long.parseLong(subTaskStartTime));
 		}
 		
 		record.setBackBuildId(build_id);
@@ -213,13 +213,13 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		
 		String ltaskEndTime = taskEndTime.replace("-", "").replace(":", "").replace(".", "").replace(" ", "").substring(0, 16);
 		String subTaskEndTime = "";
-		if(taskEndTime!=""){
+		if(ltaskEndTime!=""){
 			if(taskEndTime.length()>16){
-				subTaskEndTime = taskEndTime.substring(0, 16);
+				subTaskEndTime = ltaskEndTime.substring(0, 16);
 			}else{
-				subTaskEndTime = taskEndTime;
+				subTaskEndTime = ltaskEndTime;
 			}
-			record.setTaskEndTime(Long.parseLong(taskEndTime));//任务结束时间
+			record.setTaskEndTime(Long.parseLong(subTaskEndTime));//任务结束时间
 		}
 		
 		if("success".equals(status)){
