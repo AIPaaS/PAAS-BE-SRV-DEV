@@ -225,7 +225,9 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		//4.更新构建任务表PC_BUILD_TASK
 		Integer uppdateBuildTaskResult =buildTaskDao.updateByCdt(record, cbt);
 		
-		
+		if("error".equals(status)){
+			return  "success";
+		}
 		if(pbd.getDepTag() != null)cbtl.setDepTag(pbd.getDepTag());
 		if(backBuildId!=null)cbtl.setBackBuildIdEqual(backBuildId);
 		if(pbd.getId()!=null)cbtl.setBuildDefId(pbd.getId());
