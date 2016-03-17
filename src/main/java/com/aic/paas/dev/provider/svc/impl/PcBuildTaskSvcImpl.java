@@ -55,13 +55,13 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 	}
 	
 	@Override
-	public Long saveBuildTask(PcBuildTask record,String namespace) {
+	public Long saveBuildTask(PcBuildTask record,String namespace,String buildName,String imageFullName) {
 		
 		BinaryUtils.checkEmpty(record, "record");
 		BinaryUtils.checkEmpty(namespace, "namespace");
 		
 		CPcBuildTask cbt = new CPcBuildTask();
-		cbt.setBackBuildIdEqual(record.getBuildDefId().toString());
+		cbt.setBackBuildIdEqual(record.getBuildDefId().toString());;
 		cbt.setDataStatus(1);
 		cbt.setStatus(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
 		List<PcBuildTask> pbtlist =buildTaskDao.selectList(cbt, "ID");
@@ -69,27 +69,13 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 			 throw new ServiceException("正在构建中，请稍后再试！ ");
 		}
 		
-		//根据构建定义id，查询构建定义对象
-		PcBuildDef pbd = buildDefDao.selectById(record.getBuildDefId());
-		//根据镜像定义id，查询构建定义对象
-		PcImageDef pid = imageDefDao.selectById(pbd.getImageDefId());
-		
-		if(pbd.getDepTag()!=null) record.setDepTag(pbd.getDepTag());
-		if(pbd.getImageDefId()!=null) record.setImageDefId(pbd.getImageDefId());
-		String depTag = "";
-		if(pbd.getDepTag()!=null) depTag = pbd.getDepTag();
-		record.setDepTag(depTag);
 		record.setDataStatus(1);
-		String buildName = pbd.getBuildName();
-		String repo_name = buildName;
-		String image_name = "";
-		if(pid!=null) image_name =pid.getDirName()+"/"+pid.getImageName()+"/"+pid.getVersionNo();
 		
 		PcBuildTaskRequest pbtr = new PcBuildTaskRequest();
 		pbtr.setNamespace(namespace);
-		pbtr.setRepo_name(repo_name.substring(1).trim());
-		pbtr.setImage_name(image_name.substring(1).trim());
-		pbtr.setTag(depTag);
+		pbtr.setRepo_name(buildName.substring(1).trim());
+		pbtr.setImage_name(imageFullName.substring(1).trim());
+		pbtr.setTag(record.getDepTag());
 		pbtr.setCallback_url(paasDevUrl+"/dev/buildTaskMvc/updateBuildTaskByCallBack");
 		
 //		【构建】触发构建API接口开发post（消费方）---------------------------
@@ -99,23 +85,25 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		
 		PcBuildTaskResponse pbtre = new PcBuildTaskResponse();
 		pbtre = JSON.toObject(result, PcBuildTaskResponse.class);
-		String build_id = "";
+		Long build_id = 0l;;
 		String created_at = "";
-		if(pbtre.getBuild_id()!=null) build_id=pbtre.getBuild_id();
+
 		if(pbtre.getCreated_at()!=null) created_at=pbtre.getCreated_at();
 		String status=pbtre.getStatus();
 		
 		//根据 所属构建定义[BUILD_DEF_ID]，查询构建定义记录
-		
+		if("error".equals(status)&&(pbtre.getBuild_id()==null||"".equals(pbtre.getBuild_id()))){
+			record.setStatus(5);
+			throw new ServiceException("构建失败，请稍后再试！ ");
+		}
 		if("started".equals(status)){
 			record.setStatus(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
+			record.setBackBuildId(pbtre.getBuild_id());
+			build_id = Long.parseLong(pbtre.getBuild_id());
 		}
 		if("queue".equals(status)){
 			record.setStatus(5);
 			throw new ServiceException("构建资源已满，请稍后再试！ ");
-		}
-		if("error".equals(status)){
-			record.setStatus(5);
 		}
 		
 		String taskStartTime = created_at.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
@@ -129,13 +117,10 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 			record.setTaskStartTime(Long.parseLong(subTaskStartTime));
 		}
 		
-		record.setBackBuildId(build_id);
+		
 		
 		buildTaskDao.save(record);
-		if("".equals(build_id)){
-			throw new ServiceException("构建失败，请稍后再试！ ");
-		}
-		return Long.parseLong(build_id) ;
+		return build_id ;
 				
 	}
 	
