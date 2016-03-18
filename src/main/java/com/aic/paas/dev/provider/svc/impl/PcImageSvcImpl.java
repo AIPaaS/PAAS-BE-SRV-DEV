@@ -15,11 +15,13 @@ import com.aic.paas.dev.provider.bean.CPcImageDef;
 import com.aic.paas.dev.provider.bean.CPcImageDeploy;
 import com.aic.paas.dev.provider.bean.CPcProduct;
 import com.aic.paas.dev.provider.bean.CPcProject;
+import com.aic.paas.dev.provider.bean.PcBuildTask;
 import com.aic.paas.dev.provider.bean.PcImage;
 import com.aic.paas.dev.provider.bean.PcImageDef;
 import com.aic.paas.dev.provider.bean.PcImageDeploy;
 import com.aic.paas.dev.provider.bean.PcProduct;
 import com.aic.paas.dev.provider.bean.PcProject;
+import com.aic.paas.dev.provider.db.PcBuildTaskDao;
 import com.aic.paas.dev.provider.db.PcImageDao;
 import com.aic.paas.dev.provider.db.PcImageDefDao;
 import com.aic.paas.dev.provider.db.PcImageDeployDao;
@@ -56,6 +58,9 @@ public class PcImageSvcImpl implements PcImageSvc {
 	
 	@Autowired
 	PcImageDeployDao imageDeployDao;
+	
+	@Autowired
+	PcBuildTaskDao buildTaskDao;
 	
 	private String paasTaskUrl;
 
@@ -546,9 +551,51 @@ public class PcImageSvcImpl implements PcImageSvc {
 		return imageDeployDao.selectById(id);
 	}
 
+	@Override
+	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) {
+		String result ="error";		
+		
+		String post_callback_url = "";
+		post_callback_url = paasTaskUrl + "/dev/imageMvc/uploadImageByCallBack";
+		uploadMap.put("post_callback_url",post_callback_url);
+		String jsonMap = JSON.toString(uploadMap);
+		
+		String sendResult = HttpClientUtil.sendPostRequest(paasTaskUrl +"/dev/imageMvc/uploadImage", jsonMap);
+		if("".equals("status")){
+			throw new ServiceException("上传镜像过程出错，请稍后再试！");
+		}
+		
+		Map<String,String> resultMap = JSON.toObject(sendResult,Map.class);
+		String timeResult = resultMap.get("time");
+		String status = resultMap.get("status");
+		
+		if("started".equals(status)){
+			buildTask.setFinishType(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
+			
+		}
+		if("error".equals("status")){
+			buildTask.setFinishType(5);
+			throw new ServiceException("上传镜像过程出错，请稍后再试！");
+		}
+		
+		buildTask.setDataStatus(1);//数据状态：1-正常 0-删除
+		String taskStartTime = timeResult.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
+		String subTaskStartTime = "";
+		if(taskStartTime!=""){
+			if(taskStartTime.length()>16){
+				subTaskStartTime = taskStartTime.substring(0, 16);
+			}else{
+				subTaskStartTime = taskStartTime;
+			}			
+		}
+		buildTask.setTaskStartTime(Long.parseLong(subTaskStartTime));
+		Long saveResult = buildTaskDao.save(buildTask);
+		if(saveResult > 0){
+			result = "success";
+		}
+		return result;
+	}
 
-	
 
-	
 	
 }

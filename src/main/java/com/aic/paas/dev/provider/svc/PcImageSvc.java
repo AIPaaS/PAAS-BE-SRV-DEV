@@ -1,10 +1,12 @@
 package com.aic.paas.dev.provider.svc;
 
 import java.util.List;
+import java.util.Map;
 
 import com.aic.paas.dev.provider.bean.CPcImage;
 import com.aic.paas.dev.provider.bean.CPcImageDef;
 import com.aic.paas.dev.provider.bean.CPcImageDeploy;
+import com.aic.paas.dev.provider.bean.PcBuildTask;
 import com.aic.paas.dev.provider.bean.PcImage;
 import com.aic.paas.dev.provider.bean.PcImageDef;
 import com.aic.paas.dev.provider.bean.PcImageDeploy;
@@ -264,5 +266,12 @@ public interface PcImageSvc {
 	 * @return 操作员表[SYS_OP]映射对象
 	 */
 	public PcImageDeploy queryDeployById(Long id);
-
+	/**
+	 * 根据镜像Id，上传镜像
+	 * @param image_name 镜像名（对应目录 + 镜像名+ 版本号）
+	 * @param tag 版本号
+	 * @param export_file_url 用户上传的文件所在web服务器的http路径
+	 * @return "success/error"  成功/失败
+	 */
+	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) ;
 }
