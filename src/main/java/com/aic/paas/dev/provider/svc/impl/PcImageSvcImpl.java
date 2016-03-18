@@ -551,6 +551,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 		return imageDeployDao.selectById(id);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) {
 		String result ="error";		
@@ -595,7 +596,76 @@ public class PcImageSvcImpl implements PcImageSvc {
 		}
 		return result;
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public String imageSyncCallback(String param){
+		Map<String,String> paramMap =null;
+		if(param!=null&&!"".equals(param)){
+			paramMap = JSON.toObject(param,Map.class);
+			if(paramMap.get("image_name")==null || "".equals(paramMap.get("image_name").trim())){
+				return "error";
+			}
+			if(paramMap.get("tag")==null || "".equals(paramMap.get("tag").trim())){
+				return "error";
+			}
+			if(paramMap.get("sync_cloud_id")==null || "".equals(paramMap.get("sync_cloud_id").trim())){
+				return "error";
+			}
+			if(paramMap.get("status")==null || "".equals(paramMap.get("status").trim())){
+				return "error";
+			}
+			CPcImage cdt = new CPcImage();
+			cdt.setStatus(1);
+			cdt.setDepTagEqual(paramMap.get("tag"));
+			cdt.setImgRespId(Long.parseLong(paramMap.get("sync_cloud_id")));
+			List<PcImage> ls = imageDao.selectListByFullName("/"+paramMap.get("image_name"), cdt, null);
+			if(ls!=null&&ls.size()>0&&ls.size()<2){
+				CPcImageDeploy cdt2=new CPcImageDeploy();
+				cdt2.setImageId(ls.get(0).getId());
+				cdt2.setDepStatus(2);//发布中状态
+				List<PcImageDeploy> selectList = imageDeployDao.selectList(cdt2, null);
+				
+				if(selectList!=null&&selectList.size()>0&&selectList.size()<2){
+					if(paramMap.get("status").equals("success")){
+						PcImage pcImage = ls.get(0);
+						pcImage.setImgRespId(Long.parseLong(paramMap.get("sync_cloud_id")));
+						pcImage.setDataCenterId(selectList.get(0).getDataCenterId());
+						pcImage.setResCenterId(selectList.get(0).getResCenterId());
+						pcImage.setStatus(selectList.get(0).getImageAftStatus());
+						pcImage.setCreateTime(BinaryUtils.getNumberDateTime());
+						pcImage.setId(null);
+						long insert1 = imageDao.insert(pcImage);
+						
+						PcImageDeploy pcImageDeploy = selectList.get(0);
+						pcImageDeploy.setDepStatus(3);
+						long insert2 = imageDeployDao.insert(pcImageDeploy);
+						if(insert1>0&&insert2>0){
+							return "success";
+						}else{
+							return "error";
+						}
+					}else{
+						PcImageDeploy pcImageDeploy = selectList.get(0);
+						pcImageDeploy.setDepStatus(4);
+						long insert2 = imageDeployDao.insert(pcImageDeploy);
+						if(insert2>0){
+							return "success";
+						}else{
+							return "error";
+						}
+					}
+				}else{
+					return "error";
+				}
+			}else{
+				return "error";
+			}
+		}else{
+			return "error";
+		}
+		
+	}
 
 	
 }

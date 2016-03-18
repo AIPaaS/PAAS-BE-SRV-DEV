@@ -274,4 +274,10 @@ public interface PcImageSvc {
 	 * @return "success/error"  成功/失败
 	 */
 	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) ;
+	/**
+	 * 镜像发布回调接口
+	 * @param param
+	 * @return
+	 */
+	public String imageSyncCallback(String param);
 }
