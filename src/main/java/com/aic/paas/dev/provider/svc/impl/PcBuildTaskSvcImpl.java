@@ -82,7 +82,9 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		
 		String jsonpbtr = JSON.toString(pbtr);
 		String result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/buildTaskMvc/saveBuildTask", jsonpbtr);
-		
+		if("".equals(result)){
+			throw new ServiceException("构建失败，请稍后再试！ ");
+		}
 		PcBuildTaskResponse pbtre = new PcBuildTaskResponse();
 		pbtre = JSON.toObject(result, PcBuildTaskResponse.class);
 		Long build_id = 0l;;
