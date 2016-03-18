@@ -263,5 +263,11 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		return flag;
 	}
 	
+	
+	
+	@Override
+	public List<PcBuildTask> selectTaskListByCdt(CPcBuildTask cdt,String orders) {
+		return buildTaskDao.selectList(cdt, orders);
+	}
 
 }
