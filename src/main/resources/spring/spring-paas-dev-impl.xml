@@ -27,7 +27,9 @@
 		<property name="paasTaskUrl" value="${paas-task.interface.url}" />
 		<property name="paasDevUrl" value="${paas-dev.interface.url}" />
 	</bean>
-	<bean id="PcImageSvc" class="com.aic.paas.dev.provider.svc.impl.PcImageSvcImpl" />
+	<bean id="PcImageSvc" class="com.aic.paas.dev.provider.svc.impl.PcImageSvcImpl">
+		<property name="paasTaskUrl" value="${paas-task.interface.url}" />
+	</bean>
 	<bean id="VcMntRepositoryApplySvc" class="com.aic.paas.dev.provider.svc.impl.VcMntRepositoryApplySvcImpl" />
 	
 	

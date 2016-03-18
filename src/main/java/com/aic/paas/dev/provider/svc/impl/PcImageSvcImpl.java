@@ -29,10 +29,12 @@ import com.aic.paas.dev.provider.svc.PcImageSvc;
 import com.aic.paas.dev.provider.svc.bean.ImageStatus;
 import com.aic.paas.dev.provider.svc.bean.PcImageDefInfo;
 import com.aic.paas.dev.provider.svc.bean.PcImageInfo;
+import com.aic.paas.dev.provider.util.HttpClientUtil;
 import com.binary.core.http.HttpUtils;
 import com.binary.core.util.BinaryUtils;
 import com.binary.framework.exception.ServiceException;
 import com.binary.jdbc.Page;
+import com.binary.json.JSON;
 
 public class PcImageSvcImpl implements PcImageSvc {
 	
@@ -55,7 +57,16 @@ public class PcImageSvcImpl implements PcImageSvc {
 	@Autowired
 	PcImageDeployDao imageDeployDao;
 	
+	private String paasTaskUrl;
+
 	
+	
+	public void setPaasTaskUrl(String paasTaskUrl) {
+		if(paasTaskUrl != null) {
+			this.paasTaskUrl = paasTaskUrl.trim();
+		}
+	}
+
 
 	@Override
 	public Page<PcImageDef> queryDefPage(Integer pageNum, Integer pageSize, CPcImageDef cdt, String orders) {
@@ -488,20 +499,33 @@ public class PcImageSvcImpl implements PcImageSvc {
 			throw new ServiceException(" The target environment is deploying the current image '"+image.getImageFullName()+"'! ");
 		}
 		
-		PcImageDeploy deploy = new PcImageDeploy();
-		deploy.setImageId(id);
-		deploy.setImageBefStatus(beforeStatus.getValue());
-		deploy.setImageAftStatus(afterStatus.getValue());
-		deploy.setDataCenterId(dataCenterId);
-		deploy.setResCenterId(resCenterId);
-		deploy.setBuildNo(image.getBuildNo());
-		deploy.setBuildTime(image.getBuildTime());
-		deploy.setDepStartTime(BinaryUtils.getNumberDateTime());
-		deploy.setDepEndTime(BinaryUtils.getNumberDateTime());
-		deploy.setDepStatus(2);			//1=就绪 2=发布中 3=成功 4=失败
-		deploy.setDepor(SystemUtil.getLoginUser().getUserName());
-		deploy.setRemark(remark);
-		return imageDeployDao.insert(deploy);		
+		Map<String,Object> paramMap = new HashMap<String,Object>();
+		paramMap.put("image_name", image.getImageFullName().substring(1).trim());
+		paramMap.put("tag", image.getDepTag());
+		paramMap.put("sync_cloud_id", "cloud1");//测试时写死为cloud1 非测试要为image.getImgRespId()
+		paramMap.put("post_callback_url", paasTaskUrl+"/dev/buildDefMvc/updateBuildDefApi");
+		String param = JSON.toString(paramMap);
+		String result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/buildDefMvc/updateBuildDefApi", param);
+		
+		if(result!=null&&!"".equals("")&&"000000".equals(result)){
+			PcImageDeploy deploy = new PcImageDeploy();
+			deploy.setImageId(id);
+			deploy.setImageBefStatus(beforeStatus.getValue());
+			deploy.setImageAftStatus(afterStatus.getValue());
+			deploy.setDataCenterId(dataCenterId);
+			deploy.setResCenterId(resCenterId);
+			deploy.setBuildNo(image.getBuildNo());
+			deploy.setBuildTime(image.getBuildTime());
+			deploy.setDepStartTime(BinaryUtils.getNumberDateTime());
+			deploy.setDepEndTime(BinaryUtils.getNumberDateTime());
+			deploy.setDepStatus(2);			//1=就绪 2=发布中 3=成功 4=失败
+			deploy.setDepor(SystemUtil.getLoginUser().getUserName());
+			deploy.setRemark(remark);
+			return imageDeployDao.insert(deploy);		
+		}else{
+			throw new ServiceException("调用镜像发布接口失败! ");
+		}
+		
 	}
 
 
