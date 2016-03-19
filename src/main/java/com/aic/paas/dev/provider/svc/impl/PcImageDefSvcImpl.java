@@ -18,9 +18,6 @@ public class PcImageDefSvcImpl implements PcImageDefSvc {
 
 	@Override
 	public List<PcImageDef> selectTaskListByCdt(CPcImageDef cid, String orders) {
-		
-		PcImageDef s=imageDefDao.selectDefByFullName(111L, "");
-		
 		return imageDefDao.selectList(cid, orders);
 	}
 
