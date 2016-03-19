@@ -110,7 +110,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		
 		String taskStartTime = created_at.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
 		String subTaskStartTime = "";
-		if(taskStartTime!=""){
+		if(!"".equals(taskStartTime)){
 			if(taskStartTime.length()>16){
 				subTaskStartTime = taskStartTime.substring(0, 16);
 			}else{
@@ -125,6 +125,8 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		return build_id ;
 				
 	}
+	
+	
 	
 	
 	
@@ -200,7 +202,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		
 		String ltaskEndTime = taskEndTime.replace("-", "").replace(":", "").replace(".", "").replace(" ", "").substring(0, 16);
 		String subTaskEndTime = "";
-		if(ltaskEndTime!=""){
+		if(!"".equals(ltaskEndTime)){
 			if(taskEndTime.length()>16){
 				subTaskEndTime = ltaskEndTime.substring(0, 16);
 			}else{
@@ -264,7 +266,6 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		}
 		return flag;
 	}
-	
 	
 	
 	@Override

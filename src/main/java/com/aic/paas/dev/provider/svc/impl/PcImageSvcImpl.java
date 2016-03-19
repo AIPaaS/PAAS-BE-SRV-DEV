@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.aic.paas.comm.util.SystemUtil;
@@ -40,7 +42,7 @@ import com.binary.json.JSON;
 
 public class PcImageSvcImpl implements PcImageSvc {
 	
-	
+	static final Logger logger = LoggerFactory.getLogger(PcImageSvcImpl.class);
 	@Autowired
 	PcImageDefDao imageDefDao;
 	
@@ -551,51 +553,6 @@ public class PcImageSvcImpl implements PcImageSvc {
 		return imageDeployDao.selectById(id);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) {
-		String result ="error";		
-		
-		String post_callback_url = "";
-		post_callback_url = paasTaskUrl + "/dev/imageMvc/uploadImageByCallBack";
-		uploadMap.put("post_callback_url",post_callback_url);
-		String jsonMap = JSON.toString(uploadMap);
-		
-		String sendResult = HttpClientUtil.sendPostRequest(paasTaskUrl +"/dev/imageMvc/uploadImage", jsonMap);
-		if("".equals("status")){
-			throw new ServiceException("上传镜像过程出错，请稍后再试！");
-		}
-		
-		Map<String,String> resultMap = JSON.toObject(sendResult,Map.class);
-		String timeResult = resultMap.get("time");
-		String status = resultMap.get("status");
-		
-		if("started".equals(status)){
-			buildTask.setFinishType(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
-			
-		}
-		if("error".equals("status")){
-			buildTask.setFinishType(5);
-			throw new ServiceException("上传镜像过程出错，请稍后再试！");
-		}
-		
-		buildTask.setDataStatus(1);//数据状态：1-正常 0-删除
-		String taskStartTime = timeResult.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
-		String subTaskStartTime = "";
-		if(taskStartTime!=""){
-			if(taskStartTime.length()>16){
-				subTaskStartTime = taskStartTime.substring(0, 16);
-			}else{
-				subTaskStartTime = taskStartTime;
-			}			
-		}
-		buildTask.setTaskStartTime(Long.parseLong(subTaskStartTime));
-		Long saveResult = buildTaskDao.save(buildTask);
-		if(saveResult > 0){
-			result = "success";
-		}
-		return result;
-	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -668,6 +625,98 @@ public class PcImageSvcImpl implements PcImageSvc {
 		}
 		
 	}
-
+	@Override
+	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) {
+		String result ="error";		
+		buildTask.setDataStatus(1);
+		buildTask.setFinishType(1);//上传状态为：就绪1
+		Long buildTaskId = buildTaskDao.insert(buildTask);
+		
+		
+		String post_callback_url = "";
+		post_callback_url = paasTaskUrl + "/dev/imageMvc/uploadImageByCallBack";
+		uploadMap.put("post_callback_url",post_callback_url);
+		uploadMap.put("build_id",buildTaskId.toString());
+		String jsonMap = JSON.toString(uploadMap);
+		
+		String sendResult = HttpClientUtil.sendPostRequest(paasTaskUrl +"/dev/imageMvc/uploadImage", jsonMap);
+		if("".equals("status")){
+			throw new ServiceException("上传镜像过程出错，请稍后再试！");
+		}
+		
+		Map<String,String> resultMap = JSON.toObject(sendResult,Map.class);
+		String timeResult = resultMap.get("created_at");
+		String status = resultMap.get("status");
+		
+		if("started".equals(status)){
+			buildTask.setFinishType(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
+			
+		}
+		if("error".equals("status")){
+			buildTask.setFinishType(5);
+			throw new ServiceException("上传镜像过程出错，请稍后再试！");
+		}
+		
+		String taskStartTime = timeResult.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
+		String subTaskStartTime = "";
+		if(taskStartTime!=""){
+			if(taskStartTime.length()>16){
+				subTaskStartTime = taskStartTime.substring(0, 16);
+			}else{
+				subTaskStartTime = taskStartTime;
+			}			
+		}
+		buildTask.setTaskStartTime(Long.parseLong(subTaskStartTime));
+		Integer updateResult = buildTaskDao.updateById(buildTask, buildTaskId);
+		if(updateResult > 0){
+			result = "success";
+		}
+		return result;
+	}
+	
+	@Override
+	public String updateImageByCallBack(Map<String,String> updateMap) {
+		String result = "error";
+		String status = updateMap.get("status");
+		String tag = updateMap.get("tag");
+		String time = updateMap.get("time");
+		String image_name = updateMap.get("image_name");
+		String buildTaskId = "";
+		if(updateMap.get("build_id")==null||"".equals(updateMap.get("build_id"))){
+			logger.error("没有构建任务Id，查询错误！");
+			return result ;
+		}
+		buildTaskId = updateMap.get("build_id");
+		PcBuildTask pbt = buildTaskDao.selectById(Long.parseLong(buildTaskId));
+		
+		if(pbt==null ){
+			logger.error("没有查询到相关构建任务记录，请稍后再试！");
+			return result ;
+		}
+		pbt.setFinishType(1);//1=正常结束    2=人为中断
+		
+		if("success".equals(status)){
+			pbt.setStatus(4);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
+		}
+		if("error".equals(status)){
+			pbt.setStatus(5);
+		}
+		
+		String taskEndTime = time.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
+		String subTaskEndTime = "";
+		if(!"".equals(taskEndTime)){
+			if(taskEndTime.length()>16){
+				subTaskEndTime = taskEndTime.substring(0, 16);
+			}else{
+				subTaskEndTime = taskEndTime;
+			}
+			pbt.setTaskEndTime(Long.parseLong(subTaskEndTime));
+		}
+		int updateResult = buildTaskDao.updateById(pbt, pbt.getId());
+		if(updateResult >=1){
+			result = "success";
+		}
+		return result;
+	}
 	
 }

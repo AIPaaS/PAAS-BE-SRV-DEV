@@ -267,6 +267,12 @@ public interface PcImageSvc {
 	 */
 	public PcImageDeploy queryDeployById(Long id);
 	/**
+	 * 镜像发布回调接口
+	 * @param param
+	 * @return
+	 */
+	public String imageSyncCallback(String param);
+	/**
 	 * 根据镜像Id，上传镜像
 	 * @param image_name 镜像名（对应目录 + 镜像名+ 版本号）
 	 * @param tag 版本号
@@ -275,9 +281,8 @@ public interface PcImageSvc {
 	 */
 	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) ;
 	/**
-	 * 镜像发布回调接口
-	 * @param param
-	 * @return
+	 * @param param 回调方法，返回的参数
+	 * @return success 回调成功；error回调失败
 	 */
-	public String imageSyncCallback(String param);
+	public String updateImageByCallBack(Map<String,String> updateMap);
 }
