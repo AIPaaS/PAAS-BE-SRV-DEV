@@ -640,7 +640,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 						
 						PcImageDeploy pcImageDeploy = selectList.get(0);
 						pcImageDeploy.setDepStatus(3);
-						long insert2 = imageDeployDao.insert(pcImageDeploy);
+						long insert2 = imageDeployDao.updateById(pcImageDeploy, pcImageDeploy.getId());
 						if(insert1>0&&insert2>0){
 							return "success";
 						}else{
@@ -649,7 +649,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 					}else{
 						PcImageDeploy pcImageDeploy = selectList.get(0);
 						pcImageDeploy.setDepStatus(4);
-						long insert2 = imageDeployDao.insert(pcImageDeploy);
+						long insert2 = imageDeployDao.updateById(pcImageDeploy, pcImageDeploy.getId());
 						if(insert2>0){
 							return "success";
 						}else{
