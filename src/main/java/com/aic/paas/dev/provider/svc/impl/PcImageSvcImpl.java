@@ -507,7 +507,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 		Map<String,Object> paramMap = new HashMap<String,Object>();
 		paramMap.put("image_name", image.getImageFullName().substring(1).trim());
 		paramMap.put("tag", image.getDepTag());
-		paramMap.put("sync_cloud_id", "cloud1");//测试时写死为cloud1 非测试要为image.getImgRespId()
+		paramMap.put("sync_cloud_id", image.getImgRespId().toString());//测试时写死为cloud1 非测试要为image.getImgRespId()
 		paramMap.put("post_callback_url", paasTaskUrl+"/dev/imageMvc/imageSyncCallback");
 		String param = JSON.toString(paramMap);
 		String result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/imageMvc/imageSyncApi", param);
