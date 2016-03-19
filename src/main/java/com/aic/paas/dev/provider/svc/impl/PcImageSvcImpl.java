@@ -600,6 +600,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 	@SuppressWarnings("unchecked")
 	@Override
 	public String imageSyncCallback(String param){
+		System.out.println("param==============="+param);
 		Map<String,String> paramMap =null;
 		if(param!=null&&!"".equals(param)){
 			paramMap = JSON.toObject(param,Map.class);
@@ -662,6 +663,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 				return "error";
 			}
 		}else{
+			System.out.println("====================入参param为空！=================");
 			return "error";
 		}
 		
