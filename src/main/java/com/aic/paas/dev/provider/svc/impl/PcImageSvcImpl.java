@@ -627,6 +627,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 	}
 	@Override
 	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) {
+		logger.info("开始：上传镜像！");
 		String result ="error";		
 		buildTask.setDataStatus(1);
 		buildTask.setStatus(1);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
@@ -642,7 +643,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 		
 		String sendResult = HttpClientUtil.sendPostRequest(paasTaskUrl +"/dev/imageMvc/uploadImage", jsonMap);
 		if("".equals("status")){
-			logger.error("返回的状态为空。上传镜像过程出错，请稍后再试！");
+			logger.info("返回的状态为空。上传镜像过程出错，请稍后再试！");
 			return result;
 		}
 		
@@ -656,7 +657,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 		}
 		if("error".equals("status")){
 			buildTask.setStatus(5);
-			logger.error("上传镜像过程出错，请稍后再试！");
+			logger.info("上传镜像过程出错，请稍后再试！");
 			return result;
 		}
 		
@@ -679,6 +680,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 	
 	@Override
 	public String updateImageByCallBack(Map<String,String> updateMap) {
+		logger.info("上传镜像回调：开始------------------------------");
 		String result = "error";
 		String status = updateMap.get("status");
 		String tag = updateMap.get("tag");
@@ -718,6 +720,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 		int updateResult = buildTaskDao.updateById(pbt, pbt.getId());
 		if(updateResult >=1){
 			result = "success";
+			logger.info("上传镜像回调：成功------------------------------");
 		}
 		return result;
 	}
