@@ -66,7 +66,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 	
 	private String paasTaskUrl;
 
-	
+	private String paasDevUrl;
 	
 	public void setPaasTaskUrl(String paasTaskUrl) {
 		if(paasTaskUrl != null) {
@@ -74,6 +74,11 @@ public class PcImageSvcImpl implements PcImageSvc {
 		}
 	}
 
+	public void setPaasDevUrl(String paasDevUrl) {
+		if(paasDevUrl != null) {
+			this.paasDevUrl = paasDevUrl.trim();
+		}
+	}
 
 	@Override
 	public Page<PcImageDef> queryDefPage(Integer pageNum, Integer pageSize, CPcImageDef cdt, String orders) {
@@ -510,7 +515,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 		paramMap.put("image_name", image.getImageFullName().substring(1).trim());
 		paramMap.put("tag", image.getDepTag());
 		paramMap.put("sync_cloud_id", image.getImgRespId().toString());//测试时写死为cloud1 非测试要为image.getImgRespId()
-		paramMap.put("post_callback_url", "http://10.1.245.100:16009/paas-task"+"/dev/imageMvc/imageSyncCallback");
+		paramMap.put("post_callback_url", paasDevUrl+"/dev/imageMvc/imageSyncCallback");
 		String param = JSON.toString(paramMap);
 		String result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/imageMvc/imageSyncApi", param);
 		
