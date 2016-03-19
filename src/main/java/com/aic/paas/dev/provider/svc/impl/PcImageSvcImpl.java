@@ -629,7 +629,8 @@ public class PcImageSvcImpl implements PcImageSvc {
 	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) {
 		String result ="error";		
 		buildTask.setDataStatus(1);
-		buildTask.setFinishType(1);//上传状态为：就绪1
+		buildTask.setStatus(1);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
+		buildTask.setDepTag(uploadMap.get("tag"));
 		Long buildTaskId = buildTaskDao.insert(buildTask);
 		
 		
@@ -641,7 +642,8 @@ public class PcImageSvcImpl implements PcImageSvc {
 		
 		String sendResult = HttpClientUtil.sendPostRequest(paasTaskUrl +"/dev/imageMvc/uploadImage", jsonMap);
 		if("".equals("status")){
-			throw new ServiceException("上传镜像过程出错，请稍后再试！");
+			logger.error("返回的状态为空。上传镜像过程出错，请稍后再试！");
+			return result;
 		}
 		
 		Map<String,String> resultMap = JSON.toObject(sendResult,Map.class);
@@ -649,12 +651,13 @@ public class PcImageSvcImpl implements PcImageSvc {
 		String status = resultMap.get("status");
 		
 		if("started".equals(status)){
-			buildTask.setFinishType(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
+			buildTask.setStatus(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
 			
 		}
 		if("error".equals("status")){
-			buildTask.setFinishType(5);
-			throw new ServiceException("上传镜像过程出错，请稍后再试！");
+			buildTask.setStatus(5);
+			logger.error("上传镜像过程出错，请稍后再试！");
+			return result;
 		}
 		
 		String taskStartTime = timeResult.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
