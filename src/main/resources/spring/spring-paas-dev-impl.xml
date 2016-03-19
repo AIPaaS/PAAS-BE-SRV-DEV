@@ -32,6 +32,6 @@
 	</bean>
 	<bean id="VcMntRepositoryApplySvc" class="com.aic.paas.dev.provider.svc.impl.VcMntRepositoryApplySvcImpl" />
 	
-	
+	<bean id="PcImageDefSvc" class="com.aic.paas.dev.provider.svc.impl.PcImageDefSvcImpl" />
 	
 </beans>
