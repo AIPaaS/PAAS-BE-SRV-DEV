@@ -686,14 +686,14 @@ public class PcImageSvcImpl implements PcImageSvc {
 		String image_name = updateMap.get("image_name");
 		String buildTaskId = "";
 		if(updateMap.get("build_id")==null||"".equals(updateMap.get("build_id"))){
-			logger.error("没有构建任务Id，查询错误！");
+			logger.info("没有构建任务Id，查询错误！");
 			return result ;
 		}
 		buildTaskId = updateMap.get("build_id");
 		PcBuildTask pbt = buildTaskDao.selectById(Long.parseLong(buildTaskId));
 		
 		if(pbt==null ){
-			logger.error("没有查询到相关构建任务记录，请稍后再试！");
+			logger.info("没有查询到相关构建任务记录，请稍后再试！");
 			return result ;
 		}
 		pbt.setFinishType(1);//1=正常结束    2=人为中断
