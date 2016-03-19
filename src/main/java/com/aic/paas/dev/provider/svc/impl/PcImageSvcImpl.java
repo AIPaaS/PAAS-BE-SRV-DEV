@@ -603,7 +603,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 		System.out.println("param==============="+param);
 		Map<String,String> paramMap =null;
 		if(param!=null&&!"".equals(param)){
-			paramMap = JSON.toObject(param,Map.class);
+			paramMap = JSON.toObject(param.replace("\\", ""),Map.class);
 			if(paramMap.get("image_name")==null || "".equals(paramMap.get("image_name").trim())){
 				return "error";
 			}
