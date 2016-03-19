@@ -508,11 +508,11 @@ public class PcImageSvcImpl implements PcImageSvc {
 		paramMap.put("image_name", image.getImageFullName().substring(1).trim());
 		paramMap.put("tag", image.getDepTag());
 		paramMap.put("sync_cloud_id", image.getImgRespId().toString());//测试时写死为cloud1 非测试要为image.getImgRespId()
-		paramMap.put("post_callback_url", paasTaskUrl+"/dev/imageMvc/imageSyncCallback");
+		paramMap.put("post_callback_url", "http://10.1.245.100/paas-task"+"/dev/imageMvc/imageSyncCallback");
 		String param = JSON.toString(paramMap);
 		String result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/imageMvc/imageSyncApi", param);
 		
-		if(result!=null&&!"".equals("")&&"started".equals(result)){
+		if(result!=null&&!"".equals(result)&&"started".equals(result)){
 			PcImageDeploy deploy = new PcImageDeploy();
 			deploy.setImageId(id);
 			deploy.setImageBefStatus(beforeStatus.getValue());
