@@ -3,6 +3,8 @@ package com.aic.paas.dev.provider.svc.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.aic.paas.dev.provider.bean.CPcBuildDef;
@@ -20,14 +22,13 @@ import com.aic.paas.dev.provider.util.HttpClientUtil;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskCallBack;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskRequest;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskResponse;
-import com.binary.core.lang.DateUtils;
 import com.binary.core.util.BinaryUtils;
 import com.binary.framework.exception.ServiceException;
 import com.binary.json.JSON;
 
 
 public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
-
+	static final Logger logger = LoggerFactory.getLogger(PcBuildTaskSvcImpl.class);
 	@Autowired
 	PcBuildDefDao buildDefDao;
 	
@@ -167,6 +168,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 	}
 
 	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespId) {
+		
 		String mntId = pbtc.getMnt_id();
 		String buildName = pbtc.getRepo_name();
 		String depTag =pbtc.getTag();
@@ -183,6 +185,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		cbd.setDepTagEqual(depTag);
 		cbd.setDataStatus(1);
 		List<PcBuildDef> cbdlist = buildDefDao.selectList(cbd, null);
+		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:cbdlist.size()=", cbdlist.size());
 		PcBuildDef pbd = new PcBuildDef();
 		if(cbdlist!=null && cbdlist.size()>0){
 			pbd =cbdlist.get(0);
@@ -223,7 +226,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		}
 		//4.更新构建任务表PC_BUILD_TASK
 		Integer uppdateBuildTaskResult =buildTaskDao.updateByCdt(record, cbt);
-		
+		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:uppdateBuildTaskResult=", uppdateBuildTaskResult);
 		if("error".equals(status)){
 			return  "success";
 		}
@@ -232,14 +235,14 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		if(pbd.getId()!=null)cbtl.setBuildDefId(pbd.getId());
 
 		List<PcBuildTask> pbtlist = buildTaskDao.selectList(cbtl, "ID");
-		
+		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:pbtlist.size() =", pbtlist.size() );
 		if(pbtlist == null || pbtlist.size() <= 0){
 			 throw new ServiceException("未查询到该构建任务！ ");
 		}
 		//根据构建任务表PC_BUILD_TASK的[所属镜像定义id  IMAGE_DEF_ID]，查询唯一一条镜像定义表[PC_IMAGE_DEF]记录
 		Long imageDefId = pbd.getImageDefId();//获取镜像定义Id
 		PcImageDef pid = imageDefDao.selectById(imageDefId);
-		
+		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:pid =", pid );
 		//5.插入一条镜像表[PC_IMAGE]记录
 		PcImage pi = new PcImage();
 		if(pbd.getId()!=null)pi.setDefId(pbd.getId());//所属定义
@@ -261,6 +264,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		Long insertImageResult = Long.parseLong("0");
 		String flag ="error";
 		insertImageResult = imageDao.insert(pi);
+		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:insertImageResult =", insertImageResult );
 		if(insertImageResult >=1){
 			flag = "success";
 		}
