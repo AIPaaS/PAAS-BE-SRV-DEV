@@ -61,7 +61,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		BinaryUtils.checkEmpty(namespace, "namespace");
 		
 		CPcBuildTask cbt = new CPcBuildTask();
-		cbt.setBackBuildIdEqual(record.getBuildDefId().toString());;
+		cbt.setBuildDefId(record.getBuildDefId());
 		cbt.setDataStatus(1);
 		cbt.setStatus(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
 		List<PcBuildTask> pbtlist =buildTaskDao.selectList(cbt, "ID");
