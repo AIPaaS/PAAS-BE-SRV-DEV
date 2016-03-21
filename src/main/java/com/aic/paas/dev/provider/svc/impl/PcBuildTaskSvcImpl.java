@@ -252,7 +252,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		PcImage pi = new PcImage();
 		if(pbd.getId()!=null)pi.setDefId(pbd.getId());//所属定义
 		if(pbd.getMntId()!=null)pi.setMntId(pbd.getMntId());//所属租户
-		if(imgRespId!="")pi.setImgRespId(Long.parseLong(imgRespId));//所属镜像库,调用 资源管理模块中镜像库表[PC_IMAGE_REPOSITORY]中ID---------------------
+		if("".equals(imgRespId))pi.setImgRespId(Long.parseLong(imgRespId));//所属镜像库,调用 资源管理模块中镜像库表[PC_IMAGE_REPOSITORY]中ID---------------------
 		if(pid.getDirName()!=null)pi.setDirName(pid.getDirName());//目录名
 		if(pid.getImageName()!=null)pi.setImageName(pid.getImageName());//镜像名
 		if(pid.getImageFullName()!=null)pi.setImageFullName(pid.getImageFullName());//镜像全名
