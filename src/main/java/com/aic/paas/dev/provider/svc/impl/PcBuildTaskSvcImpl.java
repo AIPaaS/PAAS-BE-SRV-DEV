@@ -167,8 +167,8 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		}
 	}
 
-public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespId) {
-		
+	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespId) {
+		String result ="error";
 		String mntId = pbtc.getMnt_id();
 		String buildName = pbtc.getRepo_name();
 		String depTag =pbtc.getTag();
@@ -189,6 +189,9 @@ public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespI
 		PcBuildDef pbd = new PcBuildDef();
 		if(cbdlist!=null && cbdlist.size()>0){
 			pbd =cbdlist.get(0);
+		}else{
+			logger.info("出错啦！没有查询到构建定义记录！");
+			return result;
 		}
 		//3.根据部署定义的id[BUILD_DEF_ID] 和tag[DEP_TAG]和 返回的buildId[BACK_BUILD_ID]，获取部署任务记录
 		
@@ -228,7 +231,8 @@ public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespI
 		Integer uppdateBuildTaskResult =buildTaskDao.updateByCdt(record, cbt);
 		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:uppdateBuildTaskResult="+ uppdateBuildTaskResult);
 		if("error".equals(status)){
-			return  "success";
+			result = "success";
+			return result;
 		}
 		if(pbd.getDepTag() != null)cbtl.setDepTag(pbd.getDepTag());
 		if(backBuildId!=null)cbtl.setBackBuildIdEqual(backBuildId);
@@ -237,7 +241,8 @@ public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespI
 		List<PcBuildTask> pbtlist = buildTaskDao.selectList(cbtl, "ID");
 		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:pbtlist.size() ="+ pbtlist.size() );
 		if(pbtlist == null || pbtlist.size() <= 0){
-			 throw new ServiceException("未查询到该构建任务！ ");
+			 logger.info("未查询到该构建任务！ ");
+			 return result;
 		}
 		//根据构建任务表PC_BUILD_TASK的[所属镜像定义id  IMAGE_DEF_ID]，查询唯一一条镜像定义表[PC_IMAGE_DEF]记录
 		Long imageDefId = pbd.getImageDefId();//获取镜像定义Id
@@ -262,13 +267,14 @@ public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespI
 		if(pbtlist.get(0).getDepTag()!=null)pi.setDepTag(pbtlist.get(0).getDepTag());
 		if(pbtlist.get(0).getBackBuildId()!=null)pi.setBackBuildId(pbtlist.get(0).getBackBuildId());
 		Long insertImageResult = Long.parseLong("0");
-		String flag ="error";
+		
 		insertImageResult = imageDao.insert(pi);
 		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:insertImageResult ="+ insertImageResult );
 		if(insertImageResult >=1){
-			flag = "success";
+			result = "success";
+			logger.info("构建回调函数，成功！");
 		}
-		return flag;
+		return result;
 	}
 	
 	
