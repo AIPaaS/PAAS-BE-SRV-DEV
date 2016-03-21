@@ -583,13 +583,13 @@ public class PcImageSvcImpl implements PcImageSvc {
 			cdt.setDepTagEqual(paramMap.get("tag"));
 			cdt.setImgRespId(Long.parseLong(paramMap.get("sync_cloud_id")));
 			List<PcImage> ls = imageDao.selectListByFullName("/"+paramMap.get("image_name"), cdt, null);
-			if(ls!=null&&ls.size()>0&&ls.size()<2){
+			if(ls!=null&&ls.size()>0){
 				CPcImageDeploy cdt2=new CPcImageDeploy();
 				cdt2.setImageId(ls.get(0).getId());
 				cdt2.setDepStatus(2);//发布中状态
 				List<PcImageDeploy> selectList = imageDeployDao.selectList(cdt2, null);
 				
-				if(selectList!=null&&selectList.size()>0&&selectList.size()<2){
+				if(selectList!=null&&selectList.size()>0){
 					if(paramMap.get("status").equals("success")){
 						PcImage pcImage = ls.get(0);
 						pcImage.setImgRespId(Long.parseLong(paramMap.get("sync_cloud_id")));
