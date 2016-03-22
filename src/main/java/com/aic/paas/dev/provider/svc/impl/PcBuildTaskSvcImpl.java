@@ -192,7 +192,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		cbd.setDepTagEqual(depTag);
 		cbd.setDataStatus(1);
 		List<PcBuildDef> cbdlist = buildDefDao.selectList(cbd, null);
-		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:cbdlist.size()="+ cbdlist.size());
+		logger.info("========paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:cbdlist.size()="+ cbdlist.size());
 		PcBuildDef pbd = new PcBuildDef();
 		if(cbdlist!=null && cbdlist.size()>0){
 			pbd =cbdlist.get(0);
@@ -236,7 +236,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		}
 		//4.更新构建任务表PC_BUILD_TASK
 		Integer uppdateBuildTaskResult =buildTaskDao.updateByCdt(record, cbt);
-		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:uppdateBuildTaskResult="+ uppdateBuildTaskResult);
+		logger.info("========paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:uppdateBuildTaskResult="+ uppdateBuildTaskResult);
 		if("error".equals(status)){
 			result = "success";
 			return result;
@@ -246,7 +246,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		if(pbd.getId()!=null)cbtl.setBuildDefId(pbd.getId());
 
 		List<PcBuildTask> pbtlist = buildTaskDao.selectList(cbtl, "ID");
-		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:pbtlist.size() ="+ pbtlist.size() );
+		logger.info("========paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:pbtlist.size() ="+ pbtlist.size() );
 		if(pbtlist == null || pbtlist.size() <= 0){
 			 logger.info("未查询到该构建任务！ ");
 			 return result;
@@ -254,7 +254,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		//根据构建任务表PC_BUILD_TASK的[所属镜像定义id  IMAGE_DEF_ID]，查询唯一一条镜像定义表[PC_IMAGE_DEF]记录
 		Long imageDefId = pbd.getImageDefId();//获取镜像定义Id
 		PcImageDef pid = imageDefDao.selectById(imageDefId);
-		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:pid ="+ pid );
+		logger.info("========paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:pid ="+ pid );
 		//5.插入一条镜像表[PC_IMAGE]记录
 		PcImage pi = new PcImage();
 		if(pbd.getId()!=null)pi.setDefId(pbd.getId());//所属定义
@@ -276,10 +276,10 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		Long insertImageResult = Long.parseLong("0");
 		
 		insertImageResult = imageDao.insert(pi);
-		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:insertImageResult ="+ insertImageResult );
+		logger.info("========paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:insertImageResult ="+ insertImageResult );
 		if(insertImageResult >=1){
 			result = "success";
-			logger.info("构建回调函数，成功！");
+			logger.info("插入一条镜像记录。构建回调函数，成功！");
 		}
 		return result;
 	}

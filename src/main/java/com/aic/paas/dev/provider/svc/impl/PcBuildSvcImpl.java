@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.aic.paas.dev.provider.bean.CPcBuildDef;
@@ -33,7 +35,7 @@ import com.binary.jdbc.Page;
 import com.binary.json.JSON;
 
 public class PcBuildSvcImpl implements PcBuildSvc {
-	
+	static final Logger logger = LoggerFactory.getLogger(PcBuildSvcImpl.class);
 	
 	@Autowired
 	PcBuildDefDao buildDefDao;
@@ -329,6 +331,7 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 	
 	@Override
 	public String queryCompRoomIdByCallBack(PcBuildTaskCallBack pbtc) {
+		String  queryResult = "error";
 		//所属机房
 		String mntId = pbtc.getMnt_id();
 		String buildName = pbtc.getRepo_name();
@@ -345,7 +348,7 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 		PcBuildDef pbd = new PcBuildDef();
 		
 		String compRoomId = "";
-		
+		logger.info("========paas-provider-dev:PcBuildSvcImpl:queryCompRoomIdByCallBack:cbdlist.size() = "+cbdlist.size());
 		if(cbdlist!=null && cbdlist.size()>0){
 			pbd =cbdlist.get(0);
 			if(pbd.getProductId()!=null){
@@ -353,7 +356,13 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 				pp = productDao.selectById(pbd.getProductId());
 				if(pp.getCompRoomId()!=null)compRoomId = pp.getCompRoomId().toString();
 			}
-			
+		}else{
+			logger.info("查询不到构建定义记录记录！");
+			return queryResult;
+		}
+		if("".equals(compRoomId)){
+			logger.info("查询不到机房Id！");
+			return queryResult;
 		}
 		return compRoomId;
 	}
