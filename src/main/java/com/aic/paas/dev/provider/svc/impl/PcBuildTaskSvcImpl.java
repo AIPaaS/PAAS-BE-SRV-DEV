@@ -256,7 +256,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		logger.info("========paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:pid ="+ pid );
 		//5.插入一条镜像表[PC_IMAGE]记录
 		PcImage pi = new PcImage();
-		if(pbd.getId()!=null)pi.setDefId(pbd.getId());//所属定义
+		if(pbd.getId()!=null)pi.setDefId(pid.getId());//所属定义
 		if(pbd.getMntId()!=null)pi.setMntId(pbd.getMntId());//所属租户
 		if("".equals(imgRespId))pi.setImgRespId(Long.parseLong(imgRespId));//所属镜像库,调用 资源管理模块中镜像库表[PC_IMAGE_REPOSITORY]中ID---------------------
 		if(pid.getDirName()!=null)pi.setDirName(pid.getDirName());//目录名
