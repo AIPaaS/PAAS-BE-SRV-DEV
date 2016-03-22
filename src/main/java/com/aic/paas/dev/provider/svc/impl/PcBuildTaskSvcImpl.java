@@ -57,7 +57,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 	
 	@Override
 	public Long saveBuildTask(PcBuildTask record,String namespace,String buildName,String imageFullName) {
-		
+		Long saveResult = -999999l;
 		BinaryUtils.checkEmpty(record, "record");
 		BinaryUtils.checkEmpty(namespace, "namespace");
 		BinaryUtils.checkEmpty(buildName, "buildName");
@@ -69,7 +69,8 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		cbt.setStatus(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
 		List<PcBuildTask> pbtlist =buildTaskDao.selectList(cbt, "ID");
 		if(pbtlist!=null && pbtlist.size()>0){
-			 throw new ServiceException("正在构建中，请稍后再试！ ");
+			logger.info("========正在构建中，请稍后再试！ ");
+			return saveResult;
 		}
 		
 		record.setDataStatus(1);
@@ -84,11 +85,12 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 //		【构建】触发构建API接口开发post（消费方）---------------------------
 		
 		String jsonpbtr = JSON.toString(pbtr);
-		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:saveBuildTask:jsonpbtr ="+jsonpbtr);
+		logger.info("========paas-provider-dev:PcBuildTaskSvcImpl:saveBuildTask:jsonpbtr ="+jsonpbtr);
 		String result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/buildTaskMvc/saveBuildTask", jsonpbtr);
-		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:saveBuildTask:result ="+result);
+		logger.info("========paas-provider-dev:PcBuildTaskSvcImpl:saveBuildTask:result ="+result);
 		if("".equals(result)){
-			throw new ServiceException("构建失败，请稍后再试！ ");
+			logger.info("点击构建后，立即返回的结果为空！ ");
+			return saveResult;
 		}
 		PcBuildTaskResponse pbtre = new PcBuildTaskResponse();
 		pbtre = JSON.toObject(result, PcBuildTaskResponse.class);
@@ -98,11 +100,12 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		if(pbtre.getCreated_at()!=null) created_at=pbtre.getCreated_at();
 //		String status=pbtre.getStatus();
 		String status= "error";
-		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:saveBuildTask:status ="+status);
+		logger.info("========paas-provider-dev:PcBuildTaskSvcImpl:saveBuildTask:status ="+status);
+		logger.info("点击构建后，立即返回的结果为:"+status+"！ ");
 		//根据 所属构建定义[BUILD_DEF_ID]，查询构建定义记录
 		if("error".equals(status)||pbtre.getBuild_id()==null||"".equals(pbtre.getBuild_id())){
 			record.setStatus(5);
-			throw new ServiceException("构建失败，请稍后再试！ ");
+			return saveResult;
 		}
 		if("started".equals(status)){
 			record.setStatus(2);//1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败
@@ -111,7 +114,8 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		}
 		if("queue".equals(status)){
 			record.setStatus(5);
-			throw new ServiceException("构建资源已满，请稍后再试！ ");
+			logger.info("点击构建后，立即返回的结果为:构建资源已满，请稍后再试！ ");
+			saveResult = -888888l;
 		}
 		
 		String taskStartTime = created_at.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
@@ -124,8 +128,6 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 			}
 			record.setTaskStartTime(Long.parseLong(subTaskStartTime));
 		}
-		
-		
 		
 		buildTaskDao.save(record);
 		return build_id ;
