@@ -179,7 +179,7 @@ public class PcProductSvcImpl implements PcProductSvc {
 			cdt.setCodeEqual(code);
 			List<PcProduct> ls = productDao.selectList(cdt, null);
 			if(ls.size()>0 && (id==null || ls.size()>1 || ls.get(0).getId().longValue()!=id.longValue())) {
-				throw new ServiceException("<br> 产品代码 '"+code+"' 已存在! ");
+				throw new ServiceException(" is exists code '"+code+"'! ");
 			}
 		}
 		
