@@ -98,8 +98,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		String created_at = "";
 
 		if(pbtre.getCreated_at()!=null) created_at=pbtre.getCreated_at();
-//		String status=pbtre.getStatus();
-		String status= "error";
+		String status=pbtre.getStatus();
 		logger.info("========paas-provider-dev:PcBuildTaskSvcImpl:saveBuildTask:status ="+status);
 		logger.info("点击构建后，立即返回的结果为:"+status+"！ ");
 		//根据 所属构建定义[BUILD_DEF_ID]，查询构建定义记录
