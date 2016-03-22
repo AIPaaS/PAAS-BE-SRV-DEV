@@ -60,6 +60,8 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		
 		BinaryUtils.checkEmpty(record, "record");
 		BinaryUtils.checkEmpty(namespace, "namespace");
+		BinaryUtils.checkEmpty(buildName, "buildName");
+		BinaryUtils.checkEmpty(imageFullName, "imageFullName");
 		
 		CPcBuildTask cbt = new CPcBuildTask();
 		cbt.setBuildDefId(record.getBuildDefId());
@@ -82,7 +84,9 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 //		【构建】触发构建API接口开发post（消费方）---------------------------
 		
 		String jsonpbtr = JSON.toString(pbtr);
+		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:saveBuildTask:jsonpbtr ="+jsonpbtr);
 		String result = HttpClientUtil.sendPostRequest(paasTaskUrl+"/dev/buildTaskMvc/saveBuildTask", jsonpbtr);
+		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:saveBuildTask:result ="+result);
 		if("".equals(result)){
 			throw new ServiceException("构建失败，请稍后再试！ ");
 		}
@@ -92,10 +96,11 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		String created_at = "";
 
 		if(pbtre.getCreated_at()!=null) created_at=pbtre.getCreated_at();
-		String status=pbtre.getStatus();
-		
+//		String status=pbtre.getStatus();
+		String status= "error";
+		logger.info("paas-provider-dev:PcBuildTaskSvcImpl:saveBuildTask:status ="+status);
 		//根据 所属构建定义[BUILD_DEF_ID]，查询构建定义记录
-		if("error".equals(status)&&(pbtre.getBuild_id()==null||"".equals(pbtre.getBuild_id()))){
+		if("error".equals(status)||pbtre.getBuild_id()==null||"".equals(pbtre.getBuild_id())){
 			record.setStatus(5);
 			throw new ServiceException("构建失败，请稍后再试！ ");
 		}
