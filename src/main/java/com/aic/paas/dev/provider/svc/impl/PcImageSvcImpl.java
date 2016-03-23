@@ -644,6 +644,12 @@ public class PcImageSvcImpl implements PcImageSvc {
 		post_callback_url = paasTaskUrl + "/dev/imageMvc/uploadImageByCallBack";
 		uploadMap.put("post_callback_url",post_callback_url);
 		uploadMap.put("build_id",buildTaskId.toString());
+		String image_name = uploadMap.get("image_name");
+		if(image_name.length()>1){
+			uploadMap.put("image_name", image_name.substring(1));	
+		}else{
+			return result;
+		}
 		String jsonMap = JSON.toString(uploadMap);
 		logger.info("上传镜像时，调用task中接口时，传递的参数是jsonMap是："+jsonMap);
 //		paasTaskUrl = "http://10.1.245.100:16009/paas-task";
@@ -693,11 +699,6 @@ public class PcImageSvcImpl implements PcImageSvc {
 		String tag = updateMap.get("tag");
 		String time = updateMap.get("time");
 		String image_name = updateMap.get("image_name");
-		if(image_name.length()>1){
-			updateMap.put("image_name", image_name.substring(1));	
-		}else{
-			return result;
-		}
 		
 		String buildTaskId = "";
 		if(updateMap.get("build_id")==null||"".equals(updateMap.get("build_id"))){
