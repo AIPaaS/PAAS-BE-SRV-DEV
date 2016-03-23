@@ -23,7 +23,6 @@ import com.aic.paas.dev.provider.util.bean.PcBuildTaskCallBack;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskRequest;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskResponse;
 import com.binary.core.util.BinaryUtils;
-import com.binary.framework.exception.ServiceException;
 import com.binary.json.JSON;
 
 
@@ -199,6 +198,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 			logger.info("出错啦！没有查询到构建定义记录！");
 			return result;
 		}
+		Integer openMail = pbd.getOpenEmail();//1开启邮件通知；0不开启邮件通知
 		//3.根据部署定义的id[BUILD_DEF_ID] 和tag[DEP_TAG]和 返回的buildId[BACK_BUILD_ID]，获取部署任务记录
 		
 		CPcBuildTask cbt = new CPcBuildTask();		
@@ -250,6 +250,20 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 			 logger.info("未查询到该构建任务！ ");
 			 return result;
 		}
+		String taskUserId = "";
+		if(openMail==1){//当开启邮件通知时，需要获取：构建人的Id
+			if(pbtlist.get(0).getTaskUserId()!=null){
+				if("".equals(pbtlist.get(0).getTaskUserId().toString())){
+					taskUserId = pbtlist.get(0).getTaskUserId().toString();
+				}
+			}
+			if("".equals(taskUserId)){
+				logger.info("未查询到该构建人的Id！ ");
+				return result ;
+			}
+		}
+		
+		
 		//根据构建任务表PC_BUILD_TASK的[所属镜像定义id  IMAGE_DEF_ID]，查询唯一一条镜像定义表[PC_IMAGE_DEF]记录
 		Long imageDefId = pbd.getImageDefId();//获取镜像定义Id
 		PcImageDef pid = imageDefDao.selectById(imageDefId);
@@ -277,11 +291,16 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		insertImageResult = imageDao.insert(pi);
 		logger.info("========paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:insertImageResult ="+ insertImageResult );
 		if(insertImageResult >=1){
-			result = "success";
+//			result = "success";
 			logger.info("插入一条镜像记录。构建回调函数，成功！");
+		}
+		if(!"error".equals(result)){
+			result = taskUserId;
 		}
 		return result;
 	}
+	
+	
 	
 	
 	
