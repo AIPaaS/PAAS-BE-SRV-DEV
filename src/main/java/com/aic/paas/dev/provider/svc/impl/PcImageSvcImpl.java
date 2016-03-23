@@ -693,6 +693,12 @@ public class PcImageSvcImpl implements PcImageSvc {
 		String tag = updateMap.get("tag");
 		String time = updateMap.get("time");
 		String image_name = updateMap.get("image_name");
+		if(image_name.length()>1){
+			updateMap.put("image_name", image_name.substring(1));	
+		}else{
+			return result;
+		}
+		
 		String buildTaskId = "";
 		if(updateMap.get("build_id")==null||"".equals(updateMap.get("build_id"))){
 			logger.info("没有构建任务Id，查询错误！");
