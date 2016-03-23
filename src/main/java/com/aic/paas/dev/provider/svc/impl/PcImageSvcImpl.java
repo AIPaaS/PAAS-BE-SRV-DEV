@@ -645,9 +645,11 @@ public class PcImageSvcImpl implements PcImageSvc {
 		uploadMap.put("post_callback_url",post_callback_url);
 		uploadMap.put("build_id",buildTaskId.toString());
 		String jsonMap = JSON.toString(uploadMap);
-		
+		logger.info("上传镜像时，调用task中接口时，传递的参数是jsonMap是："+jsonMap);
+//		paasTaskUrl = "http://10.1.245.100:16009/paas-task";
 		String sendResult = HttpClientUtil.sendPostRequest(paasTaskUrl +"/dev/imageMvc/uploadImage", jsonMap);
-		if("".equals("status")){
+		logger.info("上传镜像时，调用task中接口时，返回的结果sendResult是："+sendResult);
+		if("".equals(sendResult)){
 			logger.info("返回的状态为空。上传镜像过程出错，请稍后再试！");
 			return result;
 		}
