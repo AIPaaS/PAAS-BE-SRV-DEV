@@ -253,7 +253,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		String taskUserId = "";
 		if(openMail==1){//当开启邮件通知时，需要获取：构建人的Id
 			if(pbtlist.get(0).getTaskUserId()!=null){
-				if("".equals(pbtlist.get(0).getTaskUserId().toString())){
+				if(!"".equals(pbtlist.get(0).getTaskUserId().toString())){
 					taskUserId = pbtlist.get(0).getTaskUserId().toString();
 				}
 			}
@@ -293,10 +293,11 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		if(insertImageResult >=1){
 //			result = "success";
 			logger.info("插入一条镜像记录。构建回调函数，成功！");
-		}
-		if(!"error".equals(result)){
 			result = taskUserId;
 		}
+//		if(!"error".equals(result)){
+//			result = taskUserId;
+//		}
 		return result;
 	}
 	
