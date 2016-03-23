@@ -641,7 +641,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 		
 		
 		String post_callback_url = "";
-		post_callback_url = paasTaskUrl + "/dev/imageMvc/uploadImageByCallBack";
+		post_callback_url = paasTaskUrl + "/dev/imageMvc/updateImageByCallBack";
 		uploadMap.put("post_callback_url",post_callback_url);
 		uploadMap.put("build_id",buildTaskId.toString());
 		String image_name = uploadMap.get("image_name");
