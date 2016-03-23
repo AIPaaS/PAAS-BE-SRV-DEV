@@ -712,7 +712,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 			logger.info("没有查询到相关构建任务记录，请稍后再试！");
 			return result ;
 		}
-		if(!("2".equals(pbt.getStatus()))){
+		if(!("2".equals(pbt.getStatus().toString()))){
 			logger.info("没有查询到状态为正在上传中的构建任务记录，请稍后再试！");
 			return result ;
 		}
