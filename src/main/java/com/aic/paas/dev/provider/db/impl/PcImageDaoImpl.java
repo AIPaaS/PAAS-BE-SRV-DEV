@@ -50,6 +50,20 @@ public class PcImageDaoImpl extends IBatisDaoTemplate<PcImage, CPcImage> impleme
 		List<PcImage> list = getSqlMapClientTemplate().queryForList(getTableName()+".selectListByFullName", map);
 		return list;
 	}
+
+
+
+	@Override
+	public List<String> selectTagListByDefId(CPcImage cdt, String orders) {
+		if(cdt == null) cdt = newCondition();
+		setDataStatusValue(cdt, 1);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("cdt", cdt);
+		fillCondition(cdt, map);
+		map.put("orders", orders);
+		List<String> list = getSqlMapClientTemplate().queryForList(getTableName()+".selectTagListByDefId", map);
+		return list;
+	}
 	
 	
 	

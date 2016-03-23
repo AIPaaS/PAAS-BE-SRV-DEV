@@ -31,6 +31,17 @@
 				ID
 			</isEmpty>
 	</select>
+	
+	<select id="selectTagListByDefId" parameterClass="java.util.Map" resultClass="java.lang.String">
+		select distinct dep_tag 
+		FROM PC_IMAGE 
+		where DEF_ID = #cdt.defId:BIGINT# and MNT_ID = #cdt.mntId:BIGINT#
+		order by
+		<isNotEmpty property="orders" >
+				$orders$
+		</isNotEmpty>
+	</select>
+
 
 
 

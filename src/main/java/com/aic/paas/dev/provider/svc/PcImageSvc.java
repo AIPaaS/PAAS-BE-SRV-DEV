@@ -285,4 +285,12 @@ public interface PcImageSvc {
 	 * @return success 回调成功；error回调失败
 	 */
 	public String updateImageByCallBack(Map<String,String> updateMap);
+	
+	/**
+	 * 根据定义iD查询tag
+	 * @param cdt
+	 * @param orders
+	 * @return
+	 */
+	public List<String> queryTagsByDefId(CPcImage cdt, String orders);
 }

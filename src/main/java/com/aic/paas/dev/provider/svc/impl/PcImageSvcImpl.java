@@ -743,4 +743,9 @@ public class PcImageSvcImpl implements PcImageSvc {
 		return result;
 	}
 	
+	@Override
+	public List<String> queryTagsByDefId(CPcImage cdt, String orders) {
+		return imageDao.selectTagListByDefId(cdt, orders);
+	}
+	
 }

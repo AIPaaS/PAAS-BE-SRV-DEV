@@ -34,8 +34,13 @@ public interface PcImageDao extends Dao<PcImage, CPcImage> {
 	 */
 	public List<PcImage> selectListByFullName(String fullName, CPcImage cdt, String orders);
 	
-	
-	
+	/**
+	 * 根据镜像定义ID查询构建tag
+	 * @param cdt
+	 * @param orders
+	 * @return
+	 */
+	public List<String> selectTagListByDefId(CPcImage cdt, String orders);
 }
 
 
