@@ -1,6 +1,8 @@
 package com.aic.paas.dev.provider.svc.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -18,6 +20,7 @@ import com.aic.paas.dev.provider.db.PcBuildTaskDao;
 import com.aic.paas.dev.provider.db.PcImageDao;
 import com.aic.paas.dev.provider.db.PcImageDefDao;
 import com.aic.paas.dev.provider.svc.PcBuildTaskSvc;
+import com.aic.paas.dev.provider.util.DateUtil;
 import com.aic.paas.dev.provider.util.HttpClientUtil;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskCallBack;
 import com.aic.paas.dev.provider.util.bean.PcBuildTaskRequest;
@@ -55,7 +58,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 	}
 	
 	@Override
-	public Long saveBuildTask(PcBuildTask record,String namespace,String buildName,String imageFullName) {
+	public Long saveBuildTask(PcBuildTask record,String namespace,String buildName,String imageFullName) throws ParseException {
 		Long saveResult = -999999l;
 		BinaryUtils.checkEmpty(record, "record");
 		BinaryUtils.checkEmpty(namespace, "namespace");
@@ -115,17 +118,10 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 			logger.info("点击构建后，立即返回的结果为:构建资源已满，请稍后再试！ ");
 			saveResult = -888888l;
 		}
+		BinaryUtils.checkEmpty(created_at, "created_at");
+		Date subTaskStartTime=DateUtil.changeTimeZone(created_at);
+		record.setTaskStartTime(BinaryUtils.getNumberDateTime(subTaskStartTime));
 		
-		String taskStartTime = created_at.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
-		String subTaskStartTime = "";
-		if(!"".equals(taskStartTime)){
-			if(taskStartTime.length()>16){
-				subTaskStartTime = taskStartTime.substring(0, 16);
-			}else{
-				subTaskStartTime = taskStartTime;
-			}
-			record.setTaskStartTime(Long.parseLong(subTaskStartTime));
-		}
 		
 		buildTaskDao.save(record);
 		return build_id ;
@@ -172,7 +168,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		}
 	}
 
-	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespId) {
+	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespId) throws ParseException {
 		String result ="error";
 		String mntId = pbtc.getMnt_id();
 		String buildName = pbtc.getRepo_name();
@@ -211,17 +207,10 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		PcBuildTask record = new PcBuildTask();
 		record.setRunStartTime(Long.parseLong(runStartTime));//实际运行时间
 
+		BinaryUtils.checkEmpty(taskEndTime, "taskEndTime");
+		Date subTaskEndTime=DateUtil.changeTimeZone(taskEndTime);
+		record.setTaskEndTime(BinaryUtils.getNumberDateTime(subTaskEndTime));//任务结束时间
 		
-		String ltaskEndTime = taskEndTime.replace("-", "").replace(":", "").replace(".", "").replace(" ", "").substring(0, 16);
-		String subTaskEndTime = "";
-		if(!"".equals(ltaskEndTime)){
-			if(taskEndTime.length()>16){
-				subTaskEndTime = ltaskEndTime.substring(0, 16);
-			}else{
-				subTaskEndTime = ltaskEndTime;
-			}
-			record.setTaskEndTime(Long.parseLong(subTaskEndTime));//任务结束时间
-		}
 		
 		if("success".equals(status)){
 			record.setStatus(4);    //1=就绪    2=构建运行中   3=构建中断中     4=成功   5=失败

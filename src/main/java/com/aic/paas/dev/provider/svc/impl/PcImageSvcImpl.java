@@ -1,6 +1,8 @@
 package com.aic.paas.dev.provider.svc.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +35,7 @@ import com.aic.paas.dev.provider.svc.PcImageSvc;
 import com.aic.paas.dev.provider.svc.bean.ImageStatus;
 import com.aic.paas.dev.provider.svc.bean.PcImageDefInfo;
 import com.aic.paas.dev.provider.svc.bean.PcImageInfo;
+import com.aic.paas.dev.provider.util.DateUtil;
 import com.aic.paas.dev.provider.util.HttpClientUtil;
 import com.binary.core.http.HttpUtils;
 import com.binary.core.util.BinaryUtils;
@@ -636,7 +639,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 		
 	}
 	@Override
-	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) {
+	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) throws ParseException {
 		logger.info("开始：上传镜像！");
 		String result ="error";		
 		buildTask.setDataStatus(1);
@@ -678,17 +681,9 @@ public class PcImageSvcImpl implements PcImageSvc {
 			logger.info("上传镜像过程出错，请稍后再试！");
 			return result;
 		}
-		
-		String taskStartTime = timeResult.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
-		String subTaskStartTime = "";
-		if(taskStartTime!=""){
-			if(taskStartTime.length()>16){
-				subTaskStartTime = taskStartTime.substring(0, 16);
-			}else{
-				subTaskStartTime = taskStartTime;
-			}			
-		}
-		buildTask.setTaskStartTime(Long.parseLong(subTaskStartTime));
+		BinaryUtils.checkEmpty(timeResult, "timeResult");
+		Date startTime=DateUtil.changeTimeZone(timeResult);
+		buildTask.setTaskStartTime(BinaryUtils.getNumberDateTime(startTime));
 		Integer updateResult = buildTaskDao.updateById(buildTask, buildTaskId);
 		if(updateResult > 0){
 			result = "success";
@@ -697,7 +692,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 	}
 	
 	@Override
-	public String updateImageByCallBack(Map<String,String> updateMap) {
+	public String updateImageByCallBack(Map<String,String> updateMap) throws ParseException {
 		logger.info("上传镜像回调：开始------------------------------");
 		String result = "error";
 		String status = updateMap.get("status");
@@ -730,16 +725,9 @@ public class PcImageSvcImpl implements PcImageSvc {
 			pbt.setStatus(5);
 		}
 		
-		String taskEndTime = time.replace("-", "").replace(":", "").replace(".", "").replace(" ", "");
-		String subTaskEndTime = "";
-		if(!"".equals(taskEndTime)){
-			if(taskEndTime.length()>16){
-				subTaskEndTime = taskEndTime.substring(0, 16);
-			}else{
-				subTaskEndTime = taskEndTime;
-			}
-			pbt.setTaskEndTime(Long.parseLong(subTaskEndTime));
-		}
+		BinaryUtils.checkEmpty(time, "time");
+		Date subTaskEndTime=DateUtil.changeTimeZone(time);
+		pbt.setTaskEndTime(BinaryUtils.getNumberDateTime(subTaskEndTime));
 		int updateResult = buildTaskDao.updateById(pbt, pbt.getId());
 		if(updateResult >=1){
 			result = "success";

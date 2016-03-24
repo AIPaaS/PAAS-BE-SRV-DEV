@@ -1,5 +1,6 @@
 package com.aic.paas.dev.provider.svc;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -279,12 +280,12 @@ public interface PcImageSvc {
 	 * @param export_file_url 用户上传的文件所在web服务器的http路径
 	 * @return "success/error"  成功/失败
 	 */
-	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) ;
+	public String uploadImage(PcBuildTask buildTask,Map<String,String> uploadMap) throws ParseException ;
 	/**
 	 * @param param 回调方法，返回的参数
 	 * @return success 回调成功；error回调失败
 	 */
-	public String updateImageByCallBack(Map<String,String> updateMap);
+	public String updateImageByCallBack(Map<String,String> updateMap) throws ParseException;
 	
 	/**
 	 * 根据定义iD查询tag

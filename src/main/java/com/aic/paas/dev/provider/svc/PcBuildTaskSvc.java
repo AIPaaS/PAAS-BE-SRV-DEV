@@ -1,5 +1,6 @@
 package com.aic.paas.dev.provider.svc;
 
+import java.text.ParseException;
 import java.util.List;
 
 import com.aic.paas.dev.provider.bean.CPcBuildTask;
@@ -18,7 +19,7 @@ public interface PcBuildTaskSvc {
 	 * @param imageFullName :  镜像全名
 	 * @return backBuildId 回调的构建Id
 	 */
-	public Long saveBuildTask(PcBuildTask record,String namespace,String buildName,String imageFullName) ;
+	public Long saveBuildTask(PcBuildTask record,String namespace,String buildName,String imageFullName) throws ParseException;
 	
 
 	/**
@@ -57,7 +58,7 @@ public interface PcBuildTaskSvc {
 	 * @param imgRespId : 所属镜像库Id
 	 * @return 
 	 */
-	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespId);
+	public String updateBuildTaskByCallBack(PcBuildTaskCallBack pbtc,String imgRespId) throws ParseException;
 	
 	/**
 	 * aic.tsd_hyh  2016.03.18
