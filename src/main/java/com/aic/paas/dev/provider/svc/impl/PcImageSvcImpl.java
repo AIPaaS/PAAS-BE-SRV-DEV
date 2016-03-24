@@ -557,8 +557,6 @@ public class PcImageSvcImpl implements PcImageSvc {
 	public PcImageDeploy queryDeployById(Long id) {
 		return imageDeployDao.selectById(id);
 	}
-
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public String imageSyncCallback(String param){
@@ -585,7 +583,6 @@ public class PcImageSvcImpl implements PcImageSvc {
 			CPcImage cdt = new CPcImage();
 			cdt.setStatus(1);
 			cdt.setDepTagEqual(paramMap.get("tag"));
-			cdt.setResCenterId(Long.parseLong(paramMap.get("sync_cloud_id")));
 			List<PcImage> ls = imageDao.selectListByFullName("/"+paramMap.get("image_name"), cdt, null);
 			if(ls!=null&&ls.size()>0){
 				CPcImageDeploy cdt2=new CPcImageDeploy();
