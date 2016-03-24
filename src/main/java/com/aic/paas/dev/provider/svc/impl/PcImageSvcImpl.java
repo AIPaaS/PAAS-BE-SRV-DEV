@@ -567,21 +567,25 @@ public class PcImageSvcImpl implements PcImageSvc {
 		if(param!=null&&!"".equals(param)){
 			paramMap = JSON.toObject(param.replace("\\", ""),Map.class);
 			if(paramMap.get("image_name")==null || "".equals(paramMap.get("image_name").trim())){
+				System.out.println("====================入参image_name为空！=================");
 				return "error";
 			}
 			if(paramMap.get("tag")==null || "".equals(paramMap.get("tag").trim())){
+				System.out.println("====================入参tag为空！=================");
 				return "error";
 			}
 			if(paramMap.get("sync_cloud_id")==null || "".equals(paramMap.get("sync_cloud_id").trim())){
+				System.out.println("====================入参sync_cloud_id为空！=================");
 				return "error";
 			}
 			if(paramMap.get("status")==null || "".equals(paramMap.get("status").trim())){
+				System.out.println("====================入参status为空！=================");
 				return "error";
 			}
 			CPcImage cdt = new CPcImage();
 			cdt.setStatus(1);
 			cdt.setDepTagEqual(paramMap.get("tag"));
-			cdt.setImgRespId(Long.parseLong(paramMap.get("sync_cloud_id")));
+			cdt.setResCenterId(Long.parseLong(paramMap.get("sync_cloud_id")));
 			List<PcImage> ls = imageDao.selectListByFullName("/"+paramMap.get("image_name"), cdt, null);
 			if(ls!=null&&ls.size()>0){
 				CPcImageDeploy cdt2=new CPcImageDeploy();
@@ -606,6 +610,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 						if(insert1>0&&insert2>0){
 							return "success";
 						}else{
+							System.out.println("============================修改镜像发布表失败！==================");
 							return "error";
 						}
 					}else{
@@ -615,13 +620,16 @@ public class PcImageSvcImpl implements PcImageSvc {
 						if(insert2>0){
 							return "success";
 						}else{
+							System.out.println("============================修改镜像发布表失败！==================");
 							return "error";
 						}
 					}
 				}else{
+					System.out.println("============================查询镜像发布表为空！==================");
 					return "error";
 				}
 			}else{
+				System.out.println("============================查询镜像表为空！==================");
 				return "error";
 			}
 		}else{
