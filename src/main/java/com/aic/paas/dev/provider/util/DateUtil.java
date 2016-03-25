@@ -9,7 +9,7 @@ import java.util.TimeZone;
 public class DateUtil {
 	
 	public static Date changeTimeZone(String time) throws ParseException{
-		SimpleDateFormat utcsdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		SimpleDateFormat utcsdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		utcsdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Date utcDate =utcsdf.parse(time);
 		SimpleDateFormat local =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
