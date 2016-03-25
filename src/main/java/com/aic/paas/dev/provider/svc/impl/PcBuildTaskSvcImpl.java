@@ -300,4 +300,10 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		return buildTaskDao.selectList(cdt, orders);
 	}
 
+	@Override
+	public PcBuildTask selectLastestBuildTask(Long[] buildDefIds) {
+		List<PcBuildTask> ls=buildTaskDao.selectLastList(buildDefIds);
+		return ls.get(0);
+	}
+
 }
