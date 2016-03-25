@@ -39,8 +39,8 @@ public class PcImageSvcTest extends TestTemplate {
 		uploadMap.put("tag","9.9.9");
 		uploadMap.put("export_file_url","http://example.com:8080/v1/image_name");
 		
-		String result = svc.uploadImage(buildTask, uploadMap);
-		System.out.println("======result================================================"+result);
+//		String result = svc.uploadImage(buildTask, uploadMap);
+//		System.out.println("======result================================================"+result);
 	}
 	
 
