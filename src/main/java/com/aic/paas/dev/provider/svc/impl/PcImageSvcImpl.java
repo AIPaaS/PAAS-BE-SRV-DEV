@@ -693,19 +693,22 @@ public class PcImageSvcImpl implements PcImageSvc {
 	
 	@Override
 	public String updateImageByCallBack(Map<String,String> updateMap) throws ParseException {
-		logger.info("上传镜像回调：开始------------------------------");
+		logger.info("开始：上传镜像回调------------------------------");
 		String result = "error";
 		String status = updateMap.get("status");
 		String tag = updateMap.get("tag");
 		String time = updateMap.get("time");
 		String image_name = updateMap.get("image_name");
-		
-		String buildTaskId = "";
-		if(updateMap.get("build_id")==null||"".equals(updateMap.get("build_id"))){
+		String imgRespId = updateMap.get("imgRespId");
+		String buildTaskId = updateMap.get("build_id");
+		if(tag==null||"".equals(tag)){
+			logger.info("tag为空");
+			return result ;
+		}		
+		if(buildTaskId==null||"".equals(buildTaskId)){
 			logger.info("没有构建任务Id，查询错误！");
 			return result ;
 		}
-		buildTaskId = updateMap.get("build_id");
 		PcBuildTask pbt = buildTaskDao.selectById(Long.parseLong(buildTaskId));
 		
 		if(pbt==null ){
@@ -729,10 +732,56 @@ public class PcImageSvcImpl implements PcImageSvc {
 		Date subTaskEndTime=DateUtil.changeTimeZone(time);
 		pbt.setTaskEndTime(BinaryUtils.getNumberDateTime(subTaskEndTime));
 		int updateResult = buildTaskDao.updateById(pbt, pbt.getId());
-		if(updateResult >=1){
-			result = "success";
-			logger.info("上传镜像回调：成功------------------------------");
+		if(updateResult <=0){
+			logger.info("上传镜像回调时，更新buildTask记录失败------------------------------");
+			return result;
 		}
+		
+		logger.info("开始：上传镜像成功后，保存一条镜像记录！");
+		
+		Long imageDefId = 0l;
+		if(pbt.getImageDefId()==null){
+			logger.info("查询出的镜像定义Id为空");
+			return result ;
+		}
+		imageDefId = pbt.getImageDefId();
+		
+		CPcImageDef cid = new CPcImageDef();
+		cid.setId(imageDefId);
+		PcImageDef pid = imageDefDao.selectById(imageDefId);
+		if(pid==null){
+			logger.info("查询出的镜像定义为空");
+			return result;
+		}
+		
+		PcImage pi = new PcImage();
+		if(pid.getId()!=null)pi.setDefId(pid.getId());//所属定义
+		if(pid.getMntId()!=null)pi.setMntId(pid.getMntId());//所属租户
+		
+		if(pid.getId()==null){
+			logger.info("镜像定义Id为空");
+			return result ;
+		}
+		pi.setImgRespId(Long.parseLong(imgRespId));//所属镜像库,调用 资源管理模块中镜像库表[PC_IMAGE_REPOSITORY]中ID---------------------
+		if(pid.getDirName()!=null)pi.setDirName(pid.getDirName());//目录名
+		if(pid.getImageName()!=null)pi.setImageName(pid.getImageName());//镜像名
+		if(pid.getImageFullName()!=null)pi.setImageFullName(pid.getImageFullName());//镜像全名
+		if(pid.getIsExternal()!=null)pi.setIsExternal(pid.getIsExternal());//是否外部镜像:1是；0否
+		if(pid.getProductId()!=null)pi.setProductId(pid.getProductId());
+		if(pid.getProjectId()!=null)pi.setProjectId(pid.getProjectId());
+		if(pbt.getTaskUserId()!=null)pi.setBuildUser(pbt.getTaskUserId().toString());
+		pi.setBuildTime(BinaryUtils.getNumberDateTime(subTaskEndTime));
+		pi.setStatus(1);//1=快照  2=开发  3=测试  4=生产------------------------------
+		pi.setDataStatus(1);//数据状态：1-正常 0-删除
+
+		pi.setDepTag(tag);
+		Long insertImageResult = Long.parseLong("0");		
+		insertImageResult = imageDao.insert(pi);
+		if(insertImageResult > 0){
+			logger.info("上传镜像时，成功插入一条镜像记录！");
+		}
+		result = "success";
+		logger.info("结束：上传镜像回调------------------------------");
 		return result;
 	}
 	
