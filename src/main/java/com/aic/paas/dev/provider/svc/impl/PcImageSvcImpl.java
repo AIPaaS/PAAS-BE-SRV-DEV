@@ -762,7 +762,14 @@ public class PcImageSvcImpl implements PcImageSvc {
 			logger.info("镜像定义Id为空");
 			return result ;
 		}
-		pi.setImgRespId(Long.parseLong(imgRespId));//所属镜像库,调用 资源管理模块中镜像库表[PC_IMAGE_REPOSITORY]中ID---------------------
+		
+		if(!"".equals(imgRespId)){
+			if(!"000000".equals(imgRespId)){
+				logger.info("此时不是外部镜像，所有有所属的产品，工程，镜像库");
+				pi.setImgRespId(Long.parseLong(imgRespId));//所属镜像库,调用 资源管理模块中镜像库表[PC_IMAGE_REPOSITORY]中ID---------------------
+			}
+		}
+		
 		if(pid.getDirName()!=null)pi.setDirName(pid.getDirName());//目录名
 		if(pid.getImageName()!=null)pi.setImageName(pid.getImageName());//镜像名
 		if(pid.getImageFullName()!=null)pi.setImageFullName(pid.getImageFullName());//镜像全名
