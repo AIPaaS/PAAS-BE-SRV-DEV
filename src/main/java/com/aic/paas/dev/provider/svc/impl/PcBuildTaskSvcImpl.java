@@ -280,13 +280,9 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		insertImageResult = imageDao.insert(pi);
 		logger.info("========paas-provider-dev:PcBuildTaskSvcImpl:updateBuildTaskByCallBack:insertImageResult ="+ insertImageResult );
 		if(insertImageResult >=1){
-//			result = "success";
 			logger.info("插入一条镜像记录。构建回调函数，成功！");
 			result = taskUserId;
 		}
-//		if(!"error".equals(result)){
-//			result = taskUserId;
-//		}
 		return result;
 	}
 	
