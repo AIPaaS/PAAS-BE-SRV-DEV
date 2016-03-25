@@ -596,7 +596,7 @@ public class PcImageSvcImpl implements PcImageSvc {
 				if(selectList!=null&&selectList.size()>0){
 					if(paramMap.get("status").equals("success")){
 						PcImage pcImage = ls.get(0);
-						pcImage.setImgRespId(Long.parseLong(paramMap.get("sync_cloud_id")));
+//						pcImage.setImgRespId(Long.parseLong(paramMap.get("sync_cloud_id")));
 						pcImage.setDataCenterId(selectList.get(0).getDataCenterId());
 						pcImage.setResCenterId(selectList.get(0).getResCenterId());
 						pcImage.setStatus(selectList.get(0).getImageAftStatus());
