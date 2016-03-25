@@ -347,10 +347,16 @@ public class PcBuildSvcImpl implements PcBuildSvc {
 		List<PcBuildDef> cbdlist = buildDefDao.selectList(cbd, null);
 		PcBuildDef pbd = new PcBuildDef();
 		
+		
 		String compRoomId = "";
 		logger.info("========paas-provider-dev:PcBuildSvcImpl:queryCompRoomIdByCallBack:cbdlist.size() = "+cbdlist.size());
 		if(cbdlist!=null && cbdlist.size()>0){
 			pbd =cbdlist.get(0);
+			Integer isExt = pbd.getIsExternal();
+			if(isExt==1){
+				logger.info("当时外部镜像时，此时没有所属产品，工程，所以返回yes");
+				return "isExt";
+			}
 			if(pbd.getProductId()!=null){
 				PcProduct pp = new PcProduct();
 				pp = productDao.selectById(pbd.getProductId());
