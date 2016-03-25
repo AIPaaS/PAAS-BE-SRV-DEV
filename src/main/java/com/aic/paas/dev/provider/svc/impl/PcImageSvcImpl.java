@@ -494,14 +494,14 @@ public class PcImageSvcImpl implements PcImageSvc {
 		}
 		
 		//判断目标状态下资源环境下境像是否已存在
-		CPcImage cdt = new CPcImage();
-		cdt.setDataCenterId(dataCenterId);
-		cdt.setResCenterId(resCenterId);
-		cdt.setStatus(afterStatus.getValue());
-		List<PcImage> ls = imageDao.selectListByFullName(image.getImageFullName(), cdt, null);
-		if(ls.size() > 0) {
-			throw new ServiceException(" The target environment existing current image '"+image.getImageFullName()+"'! ");
-		}
+//		CPcImage cdt = new CPcImage();
+//		cdt.setDataCenterId(dataCenterId);
+//		cdt.setResCenterId(resCenterId);
+//		cdt.setStatus(afterStatus.getValue());
+//		List<PcImage> ls = imageDao.selectListByFullName(image.getImageFullName(), cdt, null);
+//		if(ls.size() > 0) {
+//			throw new ServiceException(" The target environment existing current image '"+image.getImageFullName()+"'! ");
+//		}
 		
 		//判断目标状态下资源环境下境像是否正在发布
 		CPcImageDeploy depcdt = new CPcImageDeploy();
