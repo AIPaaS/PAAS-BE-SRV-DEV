@@ -269,7 +269,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		if(pbd.getProductId()!=null)pi.setProductId(pbd.getProductId());
 		if(pbd.getProjectId()!=null)pi.setProjectId(pbd.getProjectId());
 		if(pbtlist.get(0).getId()!=null)pi.setBuildNo(pbtlist.get(0).getId().toString());//build号
-		if(pbtlist.get(0).getRunStartTime()!=null)pi.setBuildTime(pbtlist.get(0).getRunStartTime());//构建时间
+		pi.setBuildTime(BinaryUtils.getNumberDateTime(subTaskEndTime));//构建时间
 		if(pbtlist.get(0).getTaskUserId()!=null)pi.setBuildUser(pbtlist.get(0).getTaskUserId().toString());
 		pi.setStatus(1);//1=快照  2=开发  3=测试  4=生产------------------------------
 		pi.setDataStatus(1);//数据状态：1-正常 0-删除
