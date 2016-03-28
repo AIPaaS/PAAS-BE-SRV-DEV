@@ -79,17 +79,7 @@ public class PcBuildTaskSvcImpl implements PcBuildTaskSvc{
 		
 		PcBuildTaskRequest pbtr = new PcBuildTaskRequest();
 		pbtr.setNamespace(namespace);
-		if(buildName.length()>0){
-			if("/".equals(buildName.charAt(0))){
-				logger.info("buildName中包含/，表示是内部镜像！");
-				pbtr.setRepo_name(buildName.substring(1).trim());
-			}else{
-				logger.info("buildName中不包含/，表示是外部镜像！");
-				pbtr.setRepo_name(buildName.trim());
-			}
-		}
-		
-		
+		pbtr.setRepo_name(buildName.substring(1).trim());
 		pbtr.setImage_name(imageFullName.substring(1).trim());
 		pbtr.setTag(record.getDepTag());
 		pbtr.setCallback_url(paasDevUrl+"/dev/buildTaskMvc/updateBuildTaskByCallBack");
